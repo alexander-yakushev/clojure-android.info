@@ -1,0 +1,182 @@
+#+title: Home
+#+OPTIONS: toc:nil
+
+#+begin_hiccup
+[:div {:class "container"}
+ [:div {:class "jumbotron"}
+  [:img {:src "images/ca_large.png" :style "float: left; margin-right: 30px;"}]
+  [:div {:class "row"}
+   [:h1 "Android ♥ Clojure"]
+   [:p "Simplicity and brevity of <b>Clojure</b> combined with
+     <b>Android platform</b> ubiquity and robustness gives you a
+     powerful dynamic environment to develop your mobile
+     applications."]
+   [:a {:class "btn btn-lg btn-primary" :role "button"
+        :href "#get-started" }
+    "Get started"]]]
+ [:center {:id "newsline"}
+  (let [f (->> (io/list-files :posts)
+               (filter #(= (:post-type (first (io/read-doc %))) "news"))
+               last)
+        [metadata] (io/read-doc f)]
+    [:span "Latest news: " (format-date (:date metadata) "(dd/MM/YY) ")
+     [:a {:href (post-url f)} (:title metadata)]])]]
+#+end_hiccup
+
+* Rationale{{[:sup " " [:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
+  :PROPERTIES:
+  :HTML_CONTAINER_CLASS: container
+  :CUSTOM_ID: why
+  :END:
+
+  [[http://clojure.org][Clojure]] is a mature programming language that compiles to JVM
+  bytecode. This fact makes it possible to package AOT-compiled Clojure
+  code into Android applications. But what are the compelling features
+  Clojure can offer compared to Java when it comes to mobile
+  development?
+
+  - *Modern functional language.* Clojure has everything to be
+    considered "hip" by today's standards. It offers first-class
+    functions, convenient syntax for different data structures, focus
+    on immutable data, powerful multithreading facilities. Being a
+    Lisp dialect, Clojure harnesses the state-of-the-art macro system
+    where all code is data.
+
+  - *REPL-driven development.* Although originally thought to be
+    impossible, Clojure dynamic compilation was brought to Android,
+    which enables the possibility to modify the application directly
+    in runtime. You don't have to recompile/redeploy your app with
+    every slightest change, just take this REPL and may it serve you
+    well.
+
+  - *Logic, UI, data - all in one language.* Make no mistake - Android
+    declarative UI is a step forward from conventional Swing approach.
+    Java is not the language where declarative style fits nicely, and
+    XML perfectly handles tree-like UI structures. But having separate
+    languages in one single application creates certain
+    inconveniences. Clojure brings user interface back to the host
+    language. Declare your UI with Clojure native data structures,
+    manipulate them with regular functions, and finally transform them
+    into UI objects. No XML involved!
+
+  - *All strength of Android is still there.* Due to Clojure's
+    excellent Java interop capabilities you can use everything Android
+    platform has to offer. If some feature is not yet ported to
+    idiomatic Clojure, you can always fallback to creating objects and
+    calling methods. In fact, Clojure-Android doesn't try to wrap
+    every single Java method to make it feel more Clojurish - Android
+    platform is beautifully designed and we try to extend it only
+    where it benefits to do so.
+
+** Shortcomings
+
+   Everything comes with a price. Clojure-Android has a couple of
+   drawbacks and peculiarities you should consider before jumping into
+   development.
+
+   - *It is a hobby project.* The work for Clojure-Android initiative
+     is done for fun/interest, and our community is small (but this
+     directly depends on you!). Please, expect not every feature to be
+     present, and those that are to have bugs. It is hard to keep up
+     with Android platform evolution and to track down all problems
+     that may arise, but we are doing our best.
+
+   - *Clojure runtime is big.* This is the main technical challenge so
+     far, which leads to two issues - it takes a long time for even
+     simplest application to load (5-10 seconds, depending on the
+     device); and also the memory consumption is high, so the
+     application will be often killed (when it is not active) to free
+     the memory. There is still hope that this can eventually be
+     solved - either with the introduction of decent tree-shaker for
+     Clojure, or using Proguard to trim the compiled classes without
+     breaking the application.
+
+   - *Clojure is slower than Java.* Clojure code can be optimized to
+     achieve the performance on par with Java, but nevertheless most
+     idiomatic Clojure will be slower for natural reasons. Clojure
+     promotes immutable collections and use of ephemeral objects, but
+     unlike JVM, Dalvik's GC does not handle lots of small objects
+     well. So await that GC will be kicking in often and impact your
+     performance. On the bright side, you can retreat to writing
+     performance-critical code directly in Java alongside with Clojure
+     code.
+
+   - *You have to know Android.* More like a warning than a drawback,
+     you still have to know Android platform decently to use
+     Clojure-Android. We do not try to compete with AOSP and replace
+     its idioms with our own ones, but rather embrace them completely
+     and simplify the usage wherever possible. So if you are new to
+     Android development, it is strongly advised to learn the concepts
+     from conventional Java side first. Clojure-android tools and
+     documentation presumes that the developer is familiar with
+     Android, as the basics are outside the scope of its scope.
+
+   - *You have to know Clojure.* If you overlooked Clojure before
+     because you didn't see where to apply it, but now are interested
+     in Clojure-Android - this is great, yet we recommend you to get
+     acquainted with Clojure for JVM first. Learning Clojure with
+     Clojure-Android might be a frustrating experience because of the
+     possible bugs, platform limitations and somewhat different
+     approach to programming on this platform.
+
+* Get started{{[:sup " " [:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
+  :PROPERTIES:
+  :HTML_CONTAINER_CLASS: container
+  :CUSTOM_ID: get-started
+  :END:
+
+   [[https://github.com/clojure-android/lein-droid/wiki/Tutorial][Lein-droid tutorial]] will help you install all the required tools
+   and get you familiarized with Clojure/Android build process.
+
+   [[https://github.com/krisc/events/blob/master/tutorial.md][Android App Development with Clojure]] is a very comprehensive
+   step-by-step guide to writing a simple, yet functional Clojure
+   mobile application.
+
+* Tools{{[:sup " " [:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
+  :PROPERTIES:
+  :HTML_CONTAINER_CLASS: container
+  :CUSTOM_ID: tools
+  :END:
+
+  This list contains developer tools that support Clojure-Android
+  initiative or are somehow related to it.
+
+  #+ATTR_HTML: :options class="table table-stripped table-tools" frame="none" border="0"
+  |                           | Project             | Version | Docs            | Description                                                                                                    |
+  |---------------------------+---------------------+---------+-----------------+----------------------------------------------------------------------------------------------------------------|
+  | [[./images/leiningen.jpg]]    | [[https://github.com/clojure-android/lein-droid][lein-droid]]          |   0.2.3 | [[https://github.com/clojure-android/lein-droid/wiki][Wiki]] [[http://clojure-android.github.io/lein-droid][Marginalia]] | [[http://leiningen.org][Leiningen]] plugin, primary build tool for Clojure-Android projects.                                             |
+  | [[./images/clojure-logo.png]] | [[http://alexander-yakushev.github.io/neko][Neko]]                |   3.0.2 | [[https://github.com/alexander-yakushev/neko/wiki][Wiki]] [[http://clojure-android.github.io/neko][Marginalia]] | Toolkit library for idiomatic Clojure development on Android.                                                  |
+  | [[./images/clojure-logo.png]] | [[https://github.com/alexander-yakushev/compliment][Compliment]]          |   0.0.3 | [[https://github.com/alexander-yakushev/compliment/wiki/Examples][Examples]]        | Clojure completion library optimized for working on Android.                                                   |
+  | [[./images/emacs.png]]        | [[https://github.com/alexander-yakushev/ac-nrepl-compliment][ac-nrepl-compliment]] |   0.1.1 |                 | Compliment front-end for GNU/Emacs. Interacts with REPL via [[https://github.com/clojure-emacs/cider][CIDER]] (formerly nrepl.el).                         |
+  | [[./images/clojure-logo.png]] | [[https://nightcode.info/][Nightcode]]           |   0.2.7 |                 | A simple IDE for Clojure and Java projects targeting the command line, the desktop, the web, Android, and iOS. |
+
+* Applications{{[:sup " "[:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
+  :PROPERTIES:
+  :HTML_CONTAINER_CLASS: container
+  :CUSTOM_ID: apps
+  :END:
+
+  The following list consists of mobile applications that are powered
+  by Clojure-Android tools.
+
+  #+ATTR_HTML: :options class="table table-stripped table-apps" frame="none" border="0"
+  |                       | Project        | Author      | Description                                                                                                                                                                                                              |
+  |-----------------------+----------------+-------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+  | [[./images/nightweb.png]] | [[https://nightweb.net][Nightweb]]       | [[https://github.com/oakes][Zach Oakes]]  | Nightweb connects your Android device to an anonymous, peer-to-peer social network. You can write posts and share photos, and your followers will retrieve them using BitTorrent running over the I2P anonymous network. |
+  | [[./images/spaz.png]]     | [[https://github.com/kenrestivo/spazradioapp][SPAZ Radio App]] | [[https://github.com/kenrestivo][Ken Restivo]] | A radio listening app for the [[http://spaz.org/][SPAZ streaming radio station]].                                                                                                                                                              |
+
+* Community{{[:sup " " [:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
+  :PROPERTIES:
+  :HTML_CONTAINER_CLASS: container
+  :CUSTOM_ID: community
+  :END:
+
+  Right now the main communication channel is the [[https://groups.google.com/forum/#!forum/clojure-android][mailing list]]. It is
+  not highly populated, but you will most likely get an answer from
+  one of the developers.
+
+  You can also join *#clojure-android* channel on Freenode.net IRC
+  server and try to catch someone there.
+
+  If you experience troubles with some of the tools, please open an
+  issue in the respective tool's Github repository.

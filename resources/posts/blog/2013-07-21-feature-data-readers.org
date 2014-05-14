@@ -1,0 +1,43 @@
+#+title: Feature: data readers
+#+tags: example neko data-readers
+#+OPTIONS: toc:nil author:nil
+
+[[http://clojure.org/reader][Tagged literals and data readers]] were added to Clojure 1.4 as a
+relatively safe way to write reader macros. They allow to specify
+custom functions for some tags, and when reader should encounter those
+tags, it should use respective functions on the data that follows.
+These reader functions have to be specified in =data_readers.clj= file
+in project source root.
+
+It was working on Android only partly. AOT-compiling code that uses
+data readers worked fine, but if you were then to evaluate code that
+relies on readers in REPL, it failed. The reason was that we store no
+clj files in the application package, and Clojure relies exactly on a
+clj-file to be read in runtime.
+
+For workaround I had to patch both lein-droid and Neko. Before project
+compilation lein-droid grabs all loaded data-readers from the project
+environment and saves them to =res/raw= folder. This resource file
+then makes it to the final package, and at initialization stage Neko
+checks for this resource file and loads data reader from it granted
+that it exists.
+
+Newest Neko comes with a few data readers for resources. I returned to
+runtime resource-resolving functions (before that all resource
+resolution utilities were macros) since they provide more flexibility,
+albeit adding extra latency. Resource readers can help mitigate this
+issue. For example:
+
+#+BEGIN_SRC clojure
+[:text-view {:text #res/string :app-name}]
+#+END_SRC
+
+It will work without a tag too and the resource will be resolved in
+runtime. But this allows you pass the keyword in runtime as well,
+keeping it in some sort of map or computing in some other way. And by
+sticking a tag before the keyword you ensure that resource ID is
+resolved in compile time and doesn't spend additional time.
+
+For now there are readers for strings, drawables, IDs and layouts.
+Hopefully data readers will prove themselves even more handy in
+spicing up the look of Clojure/Android applications.

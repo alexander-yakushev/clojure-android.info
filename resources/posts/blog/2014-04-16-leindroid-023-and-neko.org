@@ -1,0 +1,46 @@
+#+title: lein-droid 0.2.3 and Neko 3.1.0-beta1 released
+#+tags: lein-droid neko
+#+post-type: news
+#+nocut: true
+#+OPTIONS: toc:nil author:nil
+
+There are a couple of significant changes this time.
+
+[[https://github.com/clojure/clojure][Clojure]] 1.6:
+
+- Clojure 1.6 was ported to Android by Daniel ([[https://groups.google.com/forum/#!topic/clojure-android/F6VUV8ltdd0][discussion]]). It is
+  already available at Clojars as =org.clojure-android/clojure
+  1.6.0-RC1=. RC1 tag means that we are still testing if nothing broke
+  down in the transition.
+
+[[http://github.com/clojure-android/lein-droid][lein-droid]] 0.2.3:
+
+- Native libraries are now being extracted from dependency JARs if
+  they conform certain layout ([[https://github.com/clojure-android/lein-droid/pull/82][#82]]).
+- If multiple build tools versions are installed in Android SDK,
+  choose the default version. Also add option called
+  =:build-tools-version= to be able to specify the required version
+  explicitly ([[https://github.com/clojure-android/lein-droid/issues/89][#89]], [[https://github.com/clojure-android/lein-droid/wiki/project.clj-options#build-tools-version][:build-tools-version]]).
+- Certain options in =:user= profile in =profiles.clj= are now
+  ignored. These options are: =:dependencies=, =:repl-options= and
+  =:injections=. On many configurations these options contain code and
+  dependencies that are incompatible with Clojure-Android projects.
+  Therefore users were obligated to comment out this part of
+  =profiles.clj= every time they work on Clj-And projects, otherwise
+  the incomprehensible errors were shown. For more information see
+  [[https://github.com/clojure-android/lein-droid/wiki/project.clj-options#profiles][:profiles]] section in the documentation.
+
+[[http://github.com/clojure-android/neko][Neko]] 3.1.0-beta1:
+
+- Introduce =neko.activity/*a= macro to get current activity object
+  ([[https://github.com/clojure-android/neko/wiki/Namespaces#defining-an-activity][docs]]).
+- Modify =neko.find-view/find-view= to work with =:id= trait. Now
+  =find-view= allows to retrieve child views from parent view by
+  their IDs ([[https://github.com/clojure-android/neko/wiki/Namespaces#nekofind-view][docs]]).
+- Modify =neko.activity/set-content-view!= to accept UI trees. This a
+  preferable to passing an already generated View.
+- Deprecate =neko.activity/with-activity= and all usage of
+  =*activity*= dynamic Var.
+- Deprecate =:def= option to =neko.activity/defactivity=.
+- Deprecate =:def= trait for views in neko.ui.
+

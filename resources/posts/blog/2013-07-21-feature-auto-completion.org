@@ -1,0 +1,62 @@
+#+title: Feature: auto-completion
+#+tags: example compliment auto-completion
+#+OPTIONS: toc:nil author:nil
+
+Mon-Ouie from Github kindly pointed at the fact that clojure-complete
+library is enough to enable auto-completion in REPLy and Emacs. Even
+while the completion in REPLy worked decently, Emacs completion
+provided by ac-nrepl was obscenely slow. Curious about the roots of
+such big difference, I investigated both clojure-complete and ac-nrepl
+and found what was the issue. First, clojure-complete was full of
+reflection cases, which haven't hampered it much while on JVM, but
+really mattered on Android. Second, ac-nrepl called the backend many
+times for different kinds of completions (vars, namespaces, classes
+etc.). Again, it can be afforded in conventional REPL, but since every
+REPL request on Android is kind of slow, altogether it results in
+massive completion latency.
+
+Long story short, I wrote [[http://github.com/alexander-yakushev/compliment][Compliment]] and achieved decent completion
+speed. You might even want to use it with =ac-auto-start t= (start
+completion automatically), though even the slightest lag annoys me so
+I turned it off. Completion by TAB is just enough for me.
+
+The auto-completion I ended up with by much resembles the original
+complete-core/ac-nrepl. You type in stuff, a menu with candidates
+appears, next to menu there is a documentation for the current
+candidate. I tinkered with the documentation more to reduce response
+times by introducing caching on both sides, so the docs are really
+snappy.
+
+The limitations are mostly related to classes completion. Currently
+only classes that are imported into the current namespace and their
+methods can be completed. This may change if I manage to parse Android
+javadocs on the computer and complete from there.
+
+See for yourself how it looks like.
+
+#+begin_html
+<center><p><img src="/images/post/complete1.png" width="800"
+alt="Traditional function completion with
+docs"/></p>
+<p style="font-size:80%">Traditional function completion with
+docs</p></center>
+
+<center><p><img src="/images/post/complete2.png" alt="Namespaces are not a problem"/></p>
+<p style="font-size:80%">Namespaces are not a problem</p></center>
+
+<center><p><img src="/images/post/complete3.png" width="800"
+alt="...Neither namespace-qualified vars are"/></p>
+<p style="font-size:80%">...Neither namespace-qualified vars are
+</p></center>
+
+<center><p><img src="/images/post/complete4.png" width="800"
+alt="How about static methods and fields?"/></p>
+<p style="font-size:80%">How about static methods and fields?</p></center>
+
+<center><p><img src="/images/post/complete5.png" width="800"
+alt="Method completion with signatures in docs?"/></p>
+<p style="font-size:80%">Method completion with signatures in docs?</p></center>
+
+<center><p><img src="/images/post/complete6.png" alt="You must be kidding me"/></p>
+<p style="font-size:80%">You must be kidding me</p></center>
+#+end_html

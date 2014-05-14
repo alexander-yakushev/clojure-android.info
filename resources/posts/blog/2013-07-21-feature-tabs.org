@@ -1,0 +1,48 @@
+#+title: Feature: tabs
+#+tags: example neko tabs
+#+OPTIONS: toc:nil author:nil
+
+Fragments in Android 4.0+ are quite a wide topic to cover in one blow.
+I started working on it from easy use-cases, one of which are
+actionbar tabs. Introduced in 4.0+ as well, action bar can contain
+tabs which allow user to switch between different application
+perspectives. The insides of the tab are defined by the fragment.
+Boldly harnessing the power of neko.ui framework, I made it look
+something like this:
+
+#+BEGIN_SRC clojure
+(neko.action-bar/setup-action-bar a
+  {:title "Custom title"
+   :navigation-mode :tabs
+   :display-options [:show-home :show-title :home-as-up]
+   :subtitle "Custom subtitle"
+   :tabs [[:tab {:text "Alpha"
+                 :tab-listener (simple-fragment
+                                [:linear-layout {:orientation :vertical}
+                                 [:text-view {:def `atext
+                                              :layout-width :wrap
+                                              :layout-height :fill
+                                              :text "Default text"
+                                              :text-size [30 :dp]}]])}]
+          [:tab {:text "Beta"
+                 :tab-listener (simple-fragment
+                                [:linear-layout {:orientation :vertical}
+                                 [:button {:layout-width :wrap
+                                           :layout-height :fill
+                                           :text "Press to update"}]])}]]})
+#+END_SRC
+
+#+begin_html
+<p><img class="entry-img-right" width="300"
+src="/images/post/tabs.png" alt="ActionBar with tabs"/></p>
+#+end_html
+
+In conventional Android specifying listeners for tabs requires plenty
+of manual labor, generics and newInstance calls. In Clojure
+implementation I've hidden all this into Neko, so you don't have to
+think about it at all.
+
+=simple-fragment= takes either a view or UI tree and returns a
+fragment that just displays this view. Of course, fragments can do
+much more than that and functions to create more sophisticated
+fragments will follow.

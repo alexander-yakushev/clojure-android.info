@@ -1,0 +1,32 @@
+#+title: lein-droid 0.2.1 and Neko 3.0.1 released
+#+tags: lein-droid neko
+#+post-type: news
+#+nocut: true
+#+OPTIONS: toc:nil author:nil
+
+New versions bring mostly bugfixes and minor improvements.
+
+[[http://github.com/clojure-android/lein-droid][lein-droid]] 0.2.1:
+
+- Java 1.6 compatibility line is brought back. [[https://github.com/clojure-android/lein-droid/issues/81][User feedback]] shows
+  that on some setups the build goes wrong without that line.
+- Improved heuristics of finding =build-tools= directory. It is still
+  not clear to me how it is named, but hopefully we get to know the
+  pattern soon.
+
+[[http://github.com/clojure-android/neko][Neko]] 3.0.1:
+
+- Introduced =:custom-constructor= attribute for UI elements. Docs on
+  its usage are [[https://github.com/clojure-android/neko/wiki/User-interface#wiki-custom-context-and-constructor][here]].
+- Neko is finally able to setup thread stack sizes itself, thus
+  custom nREPL build is no longer necessary. This means that you can
+  replace =android/tools.nrepl 0.2.0-bigstack= with
+  =org.clojure/tools.nrepl 0.2.3= and from there just stick to the
+  latest official nREPL version.
+- Minor =neko.data.sqlite= fixes.
+
+Other changes:
+
+- [[http://github.com/alexander-yakushev/ac-cider-compliment][ac-cider-compliment]] (previously ac-nrepl-compliment) is now
+  available at MELPA and Marmalade. You can install it directly from
+  Emacs by executing =M-x package-install ac-cider-compliment=.

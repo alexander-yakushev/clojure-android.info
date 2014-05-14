@@ -1,0 +1,117 @@
+#+title: Feature: menus and action modes
+#+tags: example compliment menus action-mode
+#+OPTIONS: toc:nil author:nil
+
+** Menus
+
+  With the introduction of action bar most Android applications
+  started using it to host access to some secondary (and sometimes
+  even primary) functionality. This is done in a form of menu that is
+  right-aligned, usually contain some buttons, a search field and an
+  overflow button (under which elements are hidden when there isn't
+  enough room for them).
+
+#+begin_html
+<div style="float:right; margin:10px;">
+<p><img width="450"
+src="/images/post/menus1.png" alt="Menu on the action bar"/></p>
+<center><span style="font-size:80%">Menu on the action bar</span></center>
+</div>
+#+end_html
+
+  In conventional Android the menus are described in XML as well. They
+  get a separate folder for the configuration files and a special
+  inflater. The ability to fully describe menu in XML is somewhat
+  limited though, and most of the time you have to pass some
+  configuration action to Java code. For instance, a menu item can
+  contain an arbitrary View, and if you want to indicate this in XML,
+  you have to do it in layouts/ folder, so your item definition gets
+  split. Then, there is no convenient way to set a handler, so Android
+  people rather use centralized handlers which are not the greatest
+  design decision as well.
+
+  With new =make-menu= you can create menus as easily as general user
+  interface. The implementation relies on existing =neko.ui=
+  infrastructure, so it was actually pretty easy to write. The tree
+  you pass to it resembles XML for the most part, with a few pleasant
+  exceptions.
+
+  First, you can specify handlers in the menu tree, like in =make-ui=.
+  Second, you can specify custom action views by providing UI tree to
+  the `:action-view` attribute of the item. An example to follow.
+
+#+BEGIN_SRC clojure
+(defn MainActivity-onCreateOptionsMenu [this menu]
+  (.superOnCreateOptionsMenu this menu)
+  (make-menu
+   menu [[:item {:title "First"
+                 :icon #res/drawable :ic-launcher
+                 :show-as-action [:if-room :with-text]
+                 :on-click (fn [_] (toast "Menu item clicked"))}]
+         [:item {:show-as-action [:always :collapse-action-view]
+                 :icon #res/drawable :android/ic-menu-search
+                 :action-view [:search-view {:iconified-by-default true
+                                             :on-query-text-submit
+                                             (fn [q item]
+                                               (toast (str "Searched for: " q))
+                                               (.collapseActionView item)
+                                               )}]}]
+         [:menu {:title "Submenu"
+                 :icon #res/drawable :android/ic-menu-more
+                 :show-as-action :always}
+          [:item {:title "Second"}]]
+         [:group {:id :not-important}
+          [:item {:title "Third"
+                  :icon #res/drawable :android/ic-menu-camera
+                  :show-as-action :if-room}]
+          [:item {:title "Four"
+                  :show-as-action :never}]]])
+  true)
+#+END_SRC
+
+  The result of this you can see on a screenshot. Notice how we
+  defined a search menu item in the same tree, without splitting our
+  attention.
+
+** Action modes
+
+#+begin_html
+<div style="float:right; margin:10px;">
+<p><img width="250"
+src="/images/post/menus2.png"/></p>
+</div>
+#+end_html
+
+  Action modes (also known as contextual menus) are a method of
+  presenting additional actions when the user selects something in the
+  application (action modes can be used for virtually any purposes,
+  but most of the time they deal with selected stuff). Before 4.0 the
+  usual approach was to display a conventional dialog-like menu when
+  the user selected something by long-clicking; this approach falls
+  short when user wants to select a couple of items, and is generally
+  distracting.
+
+  Android's own implementation of action modes had one bothersome
+  property - you can't indicate if the action mode is active unless
+  you manually keep track of it. I decided to fight it by having a
+  map of activities to action modes, and automatically populating and
+  depopulating this map with current action mode. Apart from that,
+  the implementation of contextual menus was straightforward and
+  reliant on =make-menu=. Here is an example:
+
+#+BEGIN_SRC clojure
+(neko.ui.menu/start-action-mode activity
+  :on-create
+  (fn [mode menu]
+    (make-menu menu
+      [[:item {:icon #res/drawable :android/ic-menu-share
+               :on-click (fn [_]
+                           (toast (str "Selected items: "
+                                       (string/join (get-selected adapter)))))}]
+       [:item {:icon #res/drawable :android/ic-menu-revert}]
+       [:item {:icon #res/drawable :android/ic-menu-edit}]]))
+  :on-destroy (fn [mode]
+                (clear-selected adapter)))
+#+END_SRC
+
+  Screenshot #2 shows how it looks like.

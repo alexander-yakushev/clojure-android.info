@@ -1,0 +1,12 @@
+#+title: Neko moves to clojure-android Github organization
+#+tags: news neko
+#+post-type: news
+#+OPTIONS: toc:nil author:nil
+
+Neko is finally transferred to [[https://github.com/clojure-android/neko][clojure-android]] organization and is
+now considered an official mainline fork. I hope this will reduce the
+confusion that people had when they stumbled upon the old version,
+last time updated one year ago, in the organization. The old link under
+[[https://github.com/alexander-yakushev/neko][alexander-yakushev]] still works and is automatically redirected to the
+new one.
+

@@ -1,0 +1,10 @@
+#+title: lein-droid 0.2.0 and Neko 3.0.0 released
+#+tags: lein-droid neko update
+#+post-type: news
+#+OPTIONS: toc:nil author:nil
+
+After a long time of betas and previews I've finally cut these two
+releases. Not much differs from =lein-droid 0.2.0-preview3= and =neko
+3.0.0-preview4=, but those two previews themselves contain some
+breaking changes. Some changes are highlighted in this thread:
+https://groups.google.com/forum/#!topic/clojure-android/Jl2b_P7Hd7o.

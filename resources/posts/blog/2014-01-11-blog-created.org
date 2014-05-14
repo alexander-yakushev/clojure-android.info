@@ -1,0 +1,7 @@
+#+title: Blog created
+#+tags: blog
+#+post-type: news
+#+OPTIONS: toc:nil author:nil
+
+This blog will contain update news, code examples and other useful
+notes about Clojure on Android.
