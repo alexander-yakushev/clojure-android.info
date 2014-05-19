@@ -148,7 +148,7 @@
   | [[./images/clojure-logo.png]] | [[http://github.com/clojure-android/neko][Neko]]                |   3.0.2 | [[https://github.com/clojure-android/neko/wiki][Wiki]] [[http://clojure-android.github.io/neko][Marginalia]] | Toolkit library for idiomatic Clojure development on Android.                                                  |
   | [[./images/clojure-logo.png]] | [[https://github.com/alexander-yakushev/compliment][Compliment]]          |   0.1.0 | [[https://github.com/alexander-yakushev/compliment/wiki/][Wiki]]            | Clojure completion library optimized for working on Android.                                                   |
   | [[./images/emacs.png]]        | [[https://github.com/alexander-yakushev/ac-nrepl-compliment][ac-nrepl-compliment]] |   0.1.1 |                 | Compliment front-end for GNU/Emacs. Interacts with REPL via [[https://github.com/clojure-emacs/cider][CIDER]] (formerly nrepl.el).                         |
-  | [[./images/clojure-logo.png]] | [[https://nightcode.info/][Nightcode]]           |   0.2.7 |                 | A simple IDE for Clojure and Java projects targeting the command line, the desktop, the web, Android, and iOS. |
+  | [[./images/nighcode.png]]     | [[https://nightcode.info/][Nightcode]]           |   0.2.7 |                 | A simple IDE for Clojure and Java projects targeting the command line, the desktop, the web, Android, and iOS. |
 
 * Applications{{[:sup " "[:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
   :PROPERTIES:
