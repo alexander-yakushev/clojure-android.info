@@ -1,0 +1,77 @@
+#+title: [GSoC 2014] So it begins
+#+tags: gsoc
+#+OPTIONS: toc:nil author:nil
+
+This day marks the beginning of Google Summer of Code, year 2014. Unlike
+previous years my participation in it is slightly off my usual Clojure-Android
+direction. This time I work on making Clojure leaner, quicker to spin up and
+maybe slightly faster in execution. If everything goes as planned my
+modifications to Clojure compiler might be merged with upstream, so everyone
+will be able to use the lean runtime on demand.
+
+I have already posted [[http://clojure-android.info/blog/2014/05/18/gsoc2014-proposal/][the proposal]], so in this entry I will describe nuances and
+difficulties that didn't go into proposal and briefly outline the scope of work for
+the nearest future.
+
+#+readmore
+
+** Project Skummet
+
+   My effort to patch the Clojure compiler and runtime is unofficially called
+   Project Skummet (=/skʊmut/=, from Norwegian: /skummet/ --- skimmed, fat-free).
+   As stated in the proposal this patch should make Clojure able to compile
+   sources into more condensed bytecode than it does now and subsequently run
+   it.
+
+   The biggest part of the proposal is devoted to getting rid of vars. This step
+   is expected to have the biggest impact on the characteristics we seek to
+   improve (memory footprint and start-up time). It seems not so difficult to
+   replace the code in the compiler that emits Var initializers and lookups,
+   thus making them static fields of the class (in fact, I am already
+   experimenting with this and it is relatively straightforward so far). The
+   trickier part is ensuring that rest of Clojure can work with these trimmed
+   classes. As I've mentioned earlier it is not enough to just modify the
+   compiler and further on compile only the user code. Clojure evaluator
+   (runtime) will have to be modified as well.
+
+   Since we have turned Vars into static fields it is no longer possible to
+   retrieve them using =RT.var()=. There are places in Java-written part of
+   Clojure that consumes Clojure-written functions using exactly this approach.
+   The problem is that in those places we cannot just replace =RT.var= calls
+   with static references because Java code is compiled first when none of those
+   static fields exist yet. So the reflection would probably have to be involved
+   to solve the issue.
+
+   By "removing vars" I don't really mean removing the Var class completely.
+   There are cases where Var usage is still legitimate in lean runtime:
+   - dynamic vars
+   - (possibly) vars that are modified using =alter-var-root!= or =with-redefs=
+
+   Dynamic vars are considerably complex concept, and implementing them on top
+   of static fields will lead to rediscovering the same code. So it will make
+   more sense to make a wider distinction between static and dynamic vars and
+   don't change the behavior of the latter. As for explicitly modified vars they
+   require further investigation. Theoretically, replacing =bindVarRoot()=
+   method with simple assignment should cover the usecases but I'm still a
+   little unsure about that.
+
+   Another headache that we will get after removing vars is metadata. Currently
+   the Var object is what metadata attaches itself to. And also metadata
+   initialization takes a substantial amount of time during loading, so this is
+   something we'd like to sacrifice in the first place. However some metadata is
+   actually important, like =:private= tags or =:pre= and =:post= conditions.
+   These will have to be handled at the compiler level prior to being dropped
+   completely. Another issue is metadata that describes var's location in the
+   code (=:file=, =:line= and =:column=). Without those reporting the accurate
+   position of the exception raised will be impossible or will require clever
+   repurposing of Java's native line numbering in the bytecode.
+
+   As you can see there is enough trouble in carrying out even the first part of
+   the plan. But there is nothing impossible in it and I'm fairly optimistic
+   about everything turning out well. So far my local experiments show this road
+   to be certainly walkable.
+
+   I have forked Clojure on [[https://github.com/alexander-yakushev/clojure][Github]] but the fork doesn't contain anything yet. I
+   will start commiting when my changes start shaping into something sensible. I
+   will also continue to report my progress in this blog together with relevant
+   ramblings. Stay tuned.

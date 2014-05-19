@@ -1,0 +1,86 @@
+#+title: [GSoC 2014] The Proposal: Lean Clojure/JVM runtime
+#+tags: gsoc clojure
+#+OPTIONS: toc:nil author:nil
+
+This is largely unmodified content of my GSoC 2014 proposal.
+
+*Short description*: Develop a modified Clojure runtime for the JVM that is leaner
+than the original Clojure for JVM (that is, takes less time to load and consumes
+less memory) and create a compiler toolchain to be able to compile most Clojure
+libraries to be used with this runtime.
+
+One of the main obstacles in wider Clojure-Android adoption is the heaviness of
+Clojure runtime. The way Clojure is compiled and subsequently loaded, while
+acceptable in a desktop/server environment, imposes significant complications in
+utilizing Clojure in environments with less computing resources available (like
+Android or cloud platforms that can run bytecode - OpenShift, Heroku, GAE).
+Clojure's large memory footprint also becomes a liability on platforms where
+memory available to the application is strictly limited and memory is carefully
+managed (again, Android is the case).
+
+This is why I find compelling to take on the project "Lean Clojure/JVM runtime",
+suggested by Daniel Solano Gómez. The ultimate goal Daniel described is to
+recreate a runtime and compiler for a constrained subset of Clojure, that has
+characteristics of short startup delay and smaller memory footprint. This subset
+must be complete enough for the majority of Clojure libraries and Clojure itself
+to be able to run in this lean environment.
+
+#+readmore
+
+As [[http://nicholaskariniemi.github.io/2014/02/25/clojure-bootstrapping.html][analysis]] provided by Nicholas Kariniemi shows, creating and assigning Clojure
+vars take a significant amount of time during the application startup. This
+information supports the idea of removing (or reducing the usage of) the concept
+of Var in the lean runtime. Due to the immutable state of the programs that lean
+runtime/compiler is intended for, there is little use of Vars in them. Dynamic
+variables could stay, but things like "with-redefs" will have to go. Thus,
+namespace-local variables can become just static fields for the namespace.
+
+Speaking of functions, they can be either AFunction objects (as they are now),
+or Java methods. Compiler will be able to determine how to compile a function,
+based on whether it is used as a first-class function somewhere in the code. If
+it is not, the function can be compiled as a method, otherwise as =AFunction=
+object. This means that lean compiler will only be able to operate if all the
+sources are presented to him (and not when some dependencies were already
+compiled), and also the compiler will have to become multi-pass. The current
+Clojure compiler is single-pass, so this modification to compiler is rather
+substantial and will require thorough thinking to execute correctly. Other
+Clojure concepts might fit into leaner implementations rather well. Hence,
+protocols can become just interfaces, and multimethods can be compiled into
+case-switches.
+
+By setting a precondition of having everything and compiling it once with no
+successive changes allows to trim down many Clojure concepts into simpler
+counterparts. As I will progress in development, it will become obvious if this
+or that concept is worth reimplementing in a simpler way. Thus I plan to a
+combined top-to-bottom and bottom-to-top approach - move the compiler from
+Clojure's current state to a leaner one, but testing it against simple code
+first and increase its complexity gradually.
+
+From the technological perspective, the development will be initially done in a
+separate fork of Clojure. As the ultimate goal is to merge the changes into
+Clojure upstream, all the features will be implemented with this in mind. Right
+now I can think of doing this by having some of the Java classes cloned and
+modified (e.g. c.l.Compiler), and some classes may be just extended to
+conditionally resolve Clojure vars normally or, in case of lean runtime, through
+other means like reflection (e.g. c.l.RT, which needs certain vars to be
+resolved once as the class loads). But the lean runtime patches could be also
+integrated into Clojure differently if the community comes up with a unified way
+to separate different builds profiles (as discussed on this [[http://dev.clojure.org/display/design/Build%2BProfiles][page]]).
+
+Approximate timeline as I expect it to look like:
+
+- Week 1-4: Modify the compiler for initial "trimmed" Clojure specification
+  without vars. Expected result: simple Clojure namespaces with =def='s and
+  =defn='s are correctly compiled into bytecode and executed.
+- Week 5-6: Modify the implementation of concepts that relied on Vars
+  (multimethods, protocols, typetags) so that they will be able to work without
+  them.
+- Week 7-8: Ensure that code that explicitly operates on Vars (e.g modifies
+  metadata) does not crash the application. Implement a mechanism for functional
+  metadata (=:pre= and =:post= conditions, =:private= flag etc.) to be accounted
+  even without Vars.
+- Week 9-10: Explore the possibility of compiling some functions to methods.
+- Week 11-12: Documentation, testing (priority on Android), fixing loose screws.
+- Week 13-14: Prepare the fork to be merged with upstream - consult with Clojure
+  maintainers, refactor code to fit the model advised by the community, submit
+  merging requests.
