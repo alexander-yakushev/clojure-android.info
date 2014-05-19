@@ -167,3 +167,29 @@ code{
     border-radius: 6px;
     max-width: 900px;
 }
+
+/*Comment form*/
+#submit{
+    padding: 5px 10px;
+    border: none;
+    font-size: 85%;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+input, textarea {
+    padding: 0.1em 0.3em;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+textarea {
+    padding: 0.5em 10px;
+}
+
+.juvia-textarea-field textarea {
+    width: 96% !important;
+}
+
+.juvia-action input {
+    color: #3E3E3E;
+    background: none repeat scroll 0% 0% #e8e8e8;
+}

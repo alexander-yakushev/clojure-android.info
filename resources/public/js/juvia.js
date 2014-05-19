@@ -3,9 +3,9 @@
     var clear_key = location.href.match(/(http.*\/\/)?[^\/]+\/(.+)/)[2]
     var options = {
         container     : '#comments',
-        site_key      : '3zq9rn3kmovdxptg1f5fmjd38lgt8zt',
+        site_key      : '7uw1ci34anikrybednlmq0ofsjvduea',
         topic_key     : clear_key,
-        topic_url     : 'clojure-android.org/' + clear_key,
+        topic_url     : 'clojure-android.org/blog/' + clear_key,
         topic_title   : document.title || location.href,
         include_base  : !window.Juvia,
         include_css   : !window.Juvia,

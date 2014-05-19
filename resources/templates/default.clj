@@ -70,7 +70,10 @@
                   :class "entry-date"} (format-date (:date metadata) "dd.MM.YYYY")]
           [:div {:class "clear"}]])
 
-       content]
+       content
+
+       [:div {:id "comments"}
+        [:script {:src "/js/juvia.js", :type "text/javascript"}]]]
 
       content)
 
@@ -82,7 +85,22 @@
          [:a {:href "http://nakkaya.com/static.html"} "Static"]
          ". All logos are property of their respective owners."]]]]]
 
-    [:script {:src "js/analytics.js" :type "text/javascript"}]
+    "<!-- Piwik -->
+<script type=\"text/javascript\">
+  var _paq = _paq || [];
+  _paq.push([\"trackPageView\"]);
+  _paq.push([\"enableLinkTracking\"]);
+
+  (function() {
+    var u=\"http://analytics.bytopia.org/\";
+    _paq.push([\"setTrackerUrl\", u+\"piwik.php\"]);
+    _paq.push([\"setSiteId\", \"2\"]);
+    var d=document, g=d.createElement(\"script\"), s=d.getElementsByTagName(\"script\")[0]; g.type=\"text/javascript\";
+    g.defer=true; g.async=true; g.src=u+\"piwik.js\"; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Piwik Code -->"
+    ;; [:script {:src "js/analytics.js" :type "text/javascript"}]
     ;; [:noscript
     ;;  [:p [:img {:src "http://analytics.bytopia.org/piwik.php?idsite=2&amp;rec=1"
     ;;             :style "border:0", :alt ""}]]]
