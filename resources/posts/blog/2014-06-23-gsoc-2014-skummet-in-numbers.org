@@ -1,0 +1,94 @@
+#+title: [GSoC 2014] Skummet in numbers
+#+tags: clojure gsoc
+#+OPTIONS: toc:nil author:nil
+
+While Skummet slowly forms into something usable I decided to post some ballpark
+numbers that I acquired by compiling simple programs and namespaces with
+Skummet. The benchmarks I used are probably irrelevant and don't provide much
+insight into how the final version will work, but might still be interesting.
+
+** clojure.jar compiled size
+
+   I compiled the most important parts of Clojure standard library:
+   clojure.{core, string, java.io, instant, uuid, data, edn, genclass, main,
+   pprint, set, stacktrace, walk, zip, xml}. To compare only size of
+   Clojure-compiled code I deleted =clojure/lang/= and =clojure/asm/=
+   directories. The results were the following:
+
+   #+ATTR_HTML: :options class="table-post" frame="none" border="0"
+   |                              | Compiled size, KB | Lean-compiled size, KB | Reduction, % |
+   |------------------------------+-------------------+------------------------+--------------|
+   | clojure.core\_\_init         |               365 |                     75 |         79.5 |
+   | Total (without Java classes) |              4525 |                   2602 |         42.5 |
+   | Total                        |              6462 |                   4539 |         29.8 |
+   #+TBLFM: @2$4=(1-(@2$3/@2$2))*100;%.1f::@3$4=(1-(@3$3/@3$2))*100;%.1f::@4$4=(1-(@4$3/@4$2))*100;%.1f
+
+   As you can see, the main classes for namespaces (the ones that end with
+   =__init=) are reduced in size the most. In general around half the weight is
+   cut from the compiled Clojure files, which nets to 30% of whole compiled
+   codebase. This can be significant for resource-bound environments.
+
+** Function call benchmark
+
+   A few weeks ago Eric Normand asked me to give an estimate execution time
+   improvement that using Skummet may yield. By then I had no idea, and I can't
+   say I have more idea now. When I tried to call a single function a million
+   times, JVM seemed to optimize the call so that no difference was observable
+   between normal and lean-compiled code. So I complicated the code a little in
+   order to trick the JVM:
+
+   #+BEGIN_SRC clojure
+(dotimes [i 10]
+  (let [ffn (fn [x] (odd? (count x)))
+        coll ["element"]
+        ops [map filter remove group-by]]
+    (time
+      (dotimes [i 10000000]
+        ((ops (rem i 4)) ffn coll)))))
+   #+END_SRC
+
+   And the results were:
+
+   #+ATTR_HTML: :options class="table-post" frame="none" border="0"
+   | Compiled exec time, msec | Lean-compiled exec time, msec | Reduction, % |
+   |--------------------------+-------------------------------+--------------|
+   |                      849 |                           749 |         11.8 |
+   #+TBLFM: @2$3=(1-(@2$2/@2$1))*100;%.1f
+
+   Twelve percent is definitely not much, and this number is not final (it might
+   go both ways). But with further utilization of Java 8 capabilities the
+   speedup can grow, so this is a good start.
+
+** Skummet plus Android
+
+   With some voodoo magic I managed to run a sample activity with Clojure on my
+   Nexus 7 (no Neko yet unfortunately). I was quite pleased with the results,
+   startup time improved by third:
+
+   #+ATTR_HTML: :options class="table-post" frame="none" border="0"
+   | Sample app load time, msec | Lean-compiled app load time, msec | Reduction, % |
+   |----------------------------+-----------------------------------+--------------|
+   |                       2610 |                              1648 |         36.9 |
+   #+TBLFM: @2$3=(1-(@2$2/@2$1))*100;%.1f
+
+   As with APK size, the reduction was also considerable:
+
+   #+ATTR_HTML: :options class="table-post" frame="none" border="0"
+   | Sample app size, KB | Lean-compiled app size, KB | Reduction, % |
+   |---------------------+----------------------------+--------------|
+   |                1883 |                       1068 |         43.3 |
+   #+TBLFM: @2$3=(1-(@2$2/@2$1))*100;%.1f
+
+   And here are the results for heap consumption once application is loaded:
+
+   #+ATTR_HTML: :options class="table-post" frame="none" border="0"
+   | App heap usage, MB | Lean-compiled app heap usage, MB | Reduction, % |
+   |--------------------+----------------------------------+--------------|
+   |               10.6 |                              7.8 |         26.4 |
+   #+TBLFM: @2$3=(1-(@2$2/@2$1))*100;%.1f
+
+   Once again, these numbers don't tell a lot, and with real programs and
+   applications things may work differently. Nonetheless they notify that
+   characteristics that are important to us get better with lean compilation and
+   that the chosen direction may be the right one. With that in mind Project
+   Skummet development shall continue.

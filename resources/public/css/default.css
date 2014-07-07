@@ -59,6 +59,10 @@ table.table-apps {
     width: 100px;
 }
 
+.table-post {
+    margin: 10px auto;
+}
+
 html, body {
     height: 100%;
 }
@@ -123,7 +127,7 @@ pre {
     overflow: auto;
     /* width: 95%; */
 
-    font-family: Droid Sans Mono;
+    font-family: "Droid Sans Mono","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
     background: #1d1f21;
     padding: 5px;
     font-size:100%;

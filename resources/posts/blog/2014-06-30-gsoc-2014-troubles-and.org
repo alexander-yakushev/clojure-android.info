@@ -1,0 +1,140 @@
+#+title: [GSoC 2014] Troubles and dilemmas with Skummet
+#+tags: clojure gsoc skummet
+#+OPTIONS: toc:nil author:nil
+
+Another week to go, and now I'm fighting mundane but annoying issues with Vars.
+As good news I was able to step-by-step lean-compile most of Neko and
+successfully run it on Android. While I was doing it I discovered even more
+problems with Skummet, some of which I could solve at hand, but a few require
+some deeper thinking.
+
+In this post I reiterate some bigger picture obstacles that I encountered so
+far, both for your interest and my better understanding.
+
+#+readmore
+
+** Var. Var never changes.
+
+   I stated before that dynamic Vars stay Vars when compiled with Skummet. This
+   is actually quite easy to execute because the compiler knows ahead if a Var
+   is dynamic (or to be more precise, after the var is declared). The trouble
+   arises when an ordinary Var is being changed. All var changes in Clojure
+   come down to a single function =alter-var-root= which in turn calls
+   =.alterRoot= method of =clojure.lang.Var=. But when the Var is lean-compiled
+   there is in fact no Var to call methods from. And what's worse is that the
+   compiler cannot know whether the Var is going to be altered until the call
+   is to be performed.
+
+   I implemented a patch that gives a special treatment to =alter-var-root=
+   calls that operate directly on a Var. Consider the example:
+
+#+BEGIN_SRC clojure
+(alter-var-root #'testskummet.foo/just-value + 100)
+#+END_SRC
+
+   In this case when the expression is being compiled the compiler knows exactly
+   the name of the Var. This allows to compile this expression into an
+   assignment:
+
+#+BEGIN_SRC javap
+144: getstatic     #92                 // Field clojure/core__init.alter_var_root:Ljava/lang/Object;
+147: checkcast     #18                 // class clojure/lang/IFn
+150: getstatic     #97                 // Field testskummet/foo__init.just_value:Ljava/lang/Object;
+153: getstatic     #100                // Field clojure/core__init._PLUS_:Ljava/lang/Object;
+156: getstatic     #103                // Field const__18:Ljava/lang/Object;
+159: invokeinterface #106,  4          // InterfaceMethod clojure/lang/IFn.invoke:(Ljava/lang/Object;
+                                       // Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+164: putstatic     #97                 // Field testskummet/foo__init.just_value:Ljava/lang/Object;
+#+END_SRC
+
+   Which when decompiled looks like this:
+
+#+BEGIN_SRC java
+foo__init.just_value = ((IFn)core__init.alter_var_root).invoke(
+    foo__init.just_value, core__init._PLUS_, const__18);
+#+END_SRC
+
+   This is actually fine --- we wanted to change the root value of the Var and
+   we did it despite there is no Var anymore. I also had to modify the
+   =alter-var-root= function itself to be able to deal with both vars and
+   values. But this solution only handles direct =alter-var-root= calls. Here's
+   a case when the call is hidden/proxied in another function and the var is
+   passed as an argument:
+
+#+BEGIN_SRC clojure
+(alter-var-root (:var proto) assoc-in [:impls atype] mmap)
+#+END_SRC
+
+   This is a line from the Clojure's =core_deftype.clj= which is responsible for
+   protocols. Here the compiler cannot possibly know which vars we may ever pass
+   to this function. Only in runtime at the moment of executing this statement
+   it will become known which Var is being modified, but it will be just too
+   late. Two possible things to do at this point: fail with an exception or
+   ignore (skip) the statement, both not quite good. The third option would be to
+   preemptively blacklist the Vars that are changed in this way from being
+   lean-compiled. It fixes the problem but requires manual intervention.
+
+   Of course there are other ways of changing the Var like calling =.alterRoot=
+   and =.bindRoot=. These cases can be handled as well if necessary, although I
+   think using those methods goes straightly against the Clojure way.
+
+** Referring to vars in namespace declarations
+
+   Besides altering var values there are other situations where vars are
+   referred directly. The specific one stands out when the =ns= declaration
+   contains =:require= and =:use= expressions with =:refer= and =:only= lists
+   respectively. Under the hood Clojure uses =clojure.core/refer= to import
+   listed vars into the current namespace. But once again in lean compilation
+   there are usually no vars.
+
+   This case is special because we could really care less about those refers.
+   Lean-compiled vars are public static fields, so other namespaces can
+   reference and use them freely. But Clojure's behavior is defined so that when
+   the runtime cannot find a Var in a call to =refer= it bails out with an
+   exception. Hence for now in Skummet I replaced the exception with a warning,
+   but eventually a more sensible approach should be introduced (probably some
+   global flag reflecting if the current runtime is lean-compiled. If it is
+   reduce the strictness of Var lookup in =refer=).
+
+** Integration issues
+
+   Currently Skummet is a combination of modified and compiled Clojure jar,
+   Clojure's source folder, a Clojure-written script and a Bash script. This is
+   a scratchpad setup, so let's try to imagine how should it look in the end.
+
+   Ideally Skummet should coexist in the same jar with Clojure, and be no harder
+   to run than:
+
+#+BEGIN_SRC clojure
+(binding [*lean-compile* true]
+  (compile 'testskummet.bar))
+#+END_SRC
+
+   Although a few obstacles exist in the face of this approach:
+
+   1. Clojure won't compile/emit namespaces that are already loaded. This means
+      that all Clojure namespaces refuse to be compiled this way and demand
+      explicit =clojure.lang.RT/compile= call. Leiningen seems to work around
+      this somehow, so I suppose this can be resolved relatively easily.
+   2. All namespaces have to be recompiled each time. This means that you
+      cannot lean-compile Clojure runtime and bundle it in the jar. Or you can,
+      but you still need to lean-compile Clojure again before compiling other
+      your own namespaces, so that the compiler knows which vars are lean and
+      which are not.
+   3. Because of #2 you'll also need to get Java part of Clojure from somewhere
+      (=clojure.lang= and =clojure.asm= packages). Perhaps they have to be
+      bundled separately and be put on the classpath of lean-compiled project).
+
+   It appears that all three points can be worked out by having a separate jar
+   with lean-compiled environment and Java classes. Then Clojure itself can be
+   compiled but not emit classes (they are already in the jar). Anyway that
+   would complicate the process of building and distributing a lean-compiled
+   program (you would need one Clojure jar for development and another one for
+   distribution go with your compiled code).
+
+** Closing word
+
+   I listed the issues that bug me at the particular moment. Some of them can be
+   solved more easily than the others but I deal with them I'll move onto more
+   advanced stuff like lean-compiling protocols (sheesh, I hate going down that
+   rabbit hole). See you around.

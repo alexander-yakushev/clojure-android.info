@@ -1,0 +1,49 @@
+#+title: [GSoC 2014] Lean compiler: first iteration
+#+tags: gsoc
+#+OPTIONS: toc:nil author:nil
+
+I've been working on Skummet for almost a month now, and now I finally have
+something to show to the world so you can get an initial idea what's going on.
+I've just pushed my commits to my Clojure [[https://github.com/alexander-yakushev/clojure/tree/skummet][fork]]. Here is the list of things that
+are done so far:
+
+- most vars are statically compiled into class fields, unless they are related
+  to protocols and multimethods. Currently the list of vars to ignore is
+  hard-coded, but right now I'm working on automatic recognition of vars to ignore;
+- macros are not compiled at all (since they are necessary only in compile time);
+- metadata is not compiled, but unlike =:elide-meta= compiler option, Skummet
+  takes metadata into account when compiling albeit it doesn't emit it into
+  resulting class files.
+
+#+readmore
+
+To test the compiler you can clone Clojure from my repo, go inside the folder
+and run =./test-skummet= script. What it basically does is building Clojure
+(you'll need to have Maven2 installed) and then executing =test.clj= file.
+Test.clj contains instructions to compile clojure.core using the lean compiler,
+and then two Clojure files from =testskummet-src= folder. =testhere.bar=
+contains =-main= functions through which the whole compiled package is executed.
+After running the test script two folders - =clojure= and =testskummet= - will
+appear right in the project root directory which should contain the compiled
+classes.
+
+If you look at the bytecode through =javap= or by disassembling it you will see
+that most of the vars are not vars anymore but static fields, They are
+initialized as such and referenced as such in other functions. There's also no
+metadata from definitions, although calls to =alter-meta= are still there
+(finding a way to remove those is another challenge).
+
+So my next milestone (which is a work in progress) is to automatically
+blacklist Vars that shouldn't be lean-compiled. This is mostly done for
+protocols and multimethods, and will be only necessary until those two are
+modified to fit into lean compilation paradigm. After that I will focus on
+cleaning up (on the compiler level) some macros that produce unnecessary calls
+to Var methods (like =.setMeta=) so that they won't break and I won't have to
+blacklist them.
+
+Please feel free to contact me in the comments or on Github if you decided to
+try out the compiler and something didn't work. I hope next post will be
+slightly more informative as the compiler shapes up.
+
+EDIT from 06/11/14: Sorry for the wrong link to the repository. The actual link
+is https://github.com/alexander-yakushev/clojure/tree/skummet
