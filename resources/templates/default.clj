@@ -24,20 +24,20 @@
               (:site-title (config))
               (str (:title metadata) " - " (:site-title (config))))]]
    [:body
-    [:div {:class "container"}
+    [:div.container
      [:div {:class "navbar navbar-default", :role "navigation"}
-      [:div {:class "navbar-header"}
-       [:button {:type "button", :class "navbar-toggle",
-                 :data-toggle "collapse", :data-target ".navbar-collapse"}
-        [:span {:class "sr-only"} "Toggle navigation"]
-        [:span {:class "icon-bar"}]
-        [:span {:class "icon-bar"}]
-        [:span {:class "icon-bar"}]]
+      [:div.navbar-header
+       [:button.navbar-toggle {:type "button",:data-toggle "collapse",
+                               :data-target ".navbar-collapse"}
+        [:span.sr-only "Toggle navigation"]
+        [:span.icon-bar]
+        [:span.icon-bar]
+        [:span.icon-bar]]
 
-       `[:a {:class "navbar-brand", :href "/#"}
+       `[:a.navbar-brand {:href "/#"}
          [:img {:src "/images/ca1.png"}] ~@ca-logo]]
 
-      [:div {:class "navbar-collapse collapse" :id "left-navbar"}
+      [:div#left-navbar {:class "navbar-collapse collapse"}
        [:ul {:class "nav navbar-nav"}
         [:li [:a {:href "/#why"} "Rationale"]]
         [:li [:a {:href "/#get-started"} "Get started"]]
@@ -45,13 +45,13 @@
         [:li [:a {:href "/#apps"} "Applications"]]
         [:li [:a {:href "/#community"} "Community"]]]]
 
-      [:div {:class "navbar-collapse collapse" :id "right-navbar"}
+      [:div#right-navbar {:class "navbar-collapse collapse"}
        [:ul {:class "nav navbar-nav"}
         [:li [:a {:href "/blog"} "Blog"]]]]]]
 
     (when (or (= (:type metadata) :post)
               (:show-blog-nav metadata))
-     [:div {:class "container"}
+     [:div.container
       [:ul {:class "nav nav-pills" :style "float:left;"}
        [:li (if (= (:title metadata) "Blog")
               {:class "active"} {}) [:a {:href "/blog/"} "Blog home"]]
@@ -59,27 +59,27 @@
               {:class "active"} {})
         [:a {:href "/blog/archives.html"} "Archives"]]]
       [:ul {:class "nav nav-pills" :style "float:right;"}
-       [:li {} [:a {:href "/blog/rss-feed", :id "rss-feed"} "RSS feed"]]]])
+       [:li {} [:a#rss-feed {:href "/blog/rss-feed"} "RSS feed"]]]])
 
     ;; Post only
     (if (= (:type metadata) :post)
-      [:div {:class "container"}
+      [:div.container
        (when (not (:skip-title metadata))
-         [:div {:class "entry-title"}
+         [:div.entry-title
           [:h2 {:style "float:left"} (:title metadata)]
           [:span {:style "float:right"
                   :class "entry-date"} (format-date (:date metadata) "dd.MM.YYYY")]
-          [:div {:class "clear"}]])
+          [:div.clear]])
 
        content
 
-       [:div {:id "comments"}
+       [:div#comments
         [:script {:src "/js/juvia.js", :type "text/javascript"}]]]
 
       content)
 
-    [:div {:id "footer"}
-     [:div {:class "container"}
+    [:div#footer
+     [:div.container
       [:center
        [:p {:class "muted credit"}
         [:span "Copyright " blog-timespan " Alex Yakushev. Created with "
