@@ -101,8 +101,4 @@
   })();
 </script>
 <!-- End Piwik Code -->"
-    ;; [:script {:src "js/analytics.js" :type "text/javascript"}]
-    ;; [:noscript
-    ;;  [:p [:img {:src "http://analytics.bytopia.org/piwik.php?idsite=2&amp;rec=1"
-    ;;             :style "border:0", :alt ""}]]]
     ]])
