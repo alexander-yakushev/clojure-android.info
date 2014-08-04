@@ -25,7 +25,7 @@
               (str (:title metadata) " - " (:site-title (config))))]]
    [:body
     [:div.container
-     [:div {:class "navbar navbar-default", :role "navigation"}
+     [:div.navbar.navbar-default {:role "navigation"}
       [:div.navbar-header
        [:button.navbar-toggle {:type "button",:data-toggle "collapse",
                                :data-target ".navbar-collapse"}
@@ -37,7 +37,7 @@
        `[:a.navbar-brand {:href "/#"}
          [:img {:src "/images/ca1.png"}] ~@ca-logo]]
 
-      [:div#left-navbar {:class "navbar-collapse collapse"}
+      [:div#left-navbar.navbar-collapse.collapse
        [:ul {:class "nav navbar-nav"}
         [:li [:a {:href "/#why"} "Rationale"]]
         [:li [:a {:href "/#get-started"} "Get started"]]
@@ -45,20 +45,20 @@
         [:li [:a {:href "/#apps"} "Applications"]]
         [:li [:a {:href "/#community"} "Community"]]]]
 
-      [:div#right-navbar {:class "navbar-collapse collapse"}
-       [:ul {:class "nav navbar-nav"}
+      [:div#right-navbar.navbar-collapse.collapse
+       [:ul.nav.navbar-nav
         [:li [:a {:href "/blog"} "Blog"]]]]]]
 
     (when (or (= (:type metadata) :post)
               (:show-blog-nav metadata))
      [:div.container
-      [:ul {:class "nav nav-pills" :style "float:left;"}
+      [:ul.nav.nav-pills {:style "float:left;"}
        [:li (if (= (:title metadata) "Blog")
               {:class "active"} {}) [:a {:href "/blog/"} "Blog home"]]
        [:li (if (= (:title metadata) "Archives")
               {:class "active"} {})
         [:a {:href "/blog/archives.html"} "Archives"]]]
-      [:ul {:class "nav nav-pills" :style "float:right;"}
+      [:ul.nav.nav-pills {:style "float:right;"}
        [:li {} [:a#rss-feed {:href "/blog/rss-feed"} "RSS feed"]]]])
 
     ;; Post only
@@ -67,8 +67,8 @@
        (when (not (:skip-title metadata))
          [:div.entry-title
           [:h2 {:style "float:left"} (:title metadata)]
-          [:span {:style "float:right"
-                  :class "entry-date"} (format-date (:date metadata) "dd.MM.YYYY")]
+          [:span.entry-date {:style "float:right"}
+           (format-date (:date metadata) "dd.MM.YYYY")]
           [:div.clear]])
 
        content
@@ -81,9 +81,9 @@
     [:div#footer
      [:div.container
       [:center
-       [:p {:class "muted credit"}
+       [:p.muted.credit
         [:span "Copyright " blog-timespan " Alex Yakushev. Created with "
-         [:a {:href "http://nakkaya.com/static.html"} "Static"]
+         [:a {:href "https://github.com/alexander-yakushev/discharge"} "Discharge"]
          ". All logos are property of their respective owners."]]]]]
 
     "<!-- Piwik -->
