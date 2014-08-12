@@ -1,0 +1,47 @@
+#+title: [GSoC 2014] Skummet alpha-1 released
+#+tags: clojure skummet gsoc
+#+OPTIONS: toc:nil author:nil
+
+So I am finally comfortable for showing Project Skummet to the general public.
+Skummet is a experimental Clojure branch that features a modified AOT-compiler
+providing the following features:
+
+  - Compiling vars into objects stored as namespace's static fields;
+  - Skipping emission of macros;
+  - Skipping emission of metadata without eliding it completely (so it is used
+    during compilation but not emitted in the resulting classes).
+
+Since it's still in alpha stage, bugs might occur. I was able to lean-compile
+Clojure, core.async and a few other small libraries, but for others Skummet
+might fail for one reason or another. The most usual problem is when a library
+declares a var that it then references explicitly (by "with-redefs" or by
+calling methods on that Var object). How to deal with that is described below as
+step 3.
+
+To try Skummet you need to add two things to your Leiningen's =project.clj=:
+
+  1. Add special Clojure version to the =:dependencies=: =[org.bytopia/clojure "1.7.0-skummet-SNAPSHOT"]=
+
+  2. Add lein-skummet to the =:plugins= section: =[lein-skummet "0.1.4-SNAPSHOT"]=
+
+  3. If errors with direct Var usage occur, you can put a vector to
+     =:skummet-skip-vars= that contains stringified var names that have to be
+     made non-lean: =:skummet-skip-vars ["#'neko.context/context" "#'neko.resource/package-name"]=
+
+Then to compile a project with Skummet use "lein skummet compile". This will
+produce AOT-compiled Clojure classes. You can then run it with "lein skummet
+run" (the only difference from "lein run" is that no source dependencies are
+included to the classpath, so you are sure you are running only the compile
+code); or you can execute "lein skummet jar" to create an uberjar that can then
+be used regularly.
+
+There is a sample project that already has all necessary configuration for
+Skummet: https://github.com/alexander-yakushev/leantest.
+
+I'd be really grateful if you tried this project and shared your experiences
+(specifically disappointing ones:)). It is important now to test Skummet with
+different libraries and find code where it falls short compiling. A good idea
+will be to benchmark results. My experiments so far show a reduction in startup
+time by ~40% for Clojure, core.async and for Clojure on Android (right now
+lein-skummet cannot be used with lein-droid, but this option will be available
+soon).
