@@ -1,0 +1,93 @@
+#+title: Android meets CIDER (because robots love drinks too)
+#+tags: cider
+#+OPTIONS: toc:nil author:nil
+
+TL;DR: Best[fn:1] Clojure development environment now works perfectly[fn:2] on
+Android.
+
+What's the big deal, you would ask? CIDER always had an ability to connect to
+Clojure-Android application with =M-x cider localhost 9999=. That is true, but
+this setup allowed you just to execute REPL commands. Good enough for
+development --- not for development environment. Most of its power CIDER draws
+from middleware --- the Clojure-side utilities that allow CIDER to provide
+advanced functionality. Clojure-Android applications used to crash if built with
+`cider-nrepl` included, but not anymore.
+
+#+readmore
+
+** How do I drank CIDER
+
+   If your doctor has already confirmed that CIDER is good for you, open your
+   =profiles.clj= and add the following profile there:
+
+#+BEGIN_SRC clojure
+:android-user {:dependencies [[cider/cider-nrepl "0.8.0-SNAPSHOT"]]
+               :android {:aot-exclude-ns ["cider.nrepl.middleware.util.java.parser"
+                                          "cider.nrepl" "cider-nrepl.plugin"]}}
+#+END_SRC
+
+   =:android-user= is a suggested substitute profile for =:user= which CoA
+   projects don't use by default ([[https://github.com/clojure-android/lein-droid/wiki/Profiles#android-common][details]]). Also make sure you are using the
+   latest version of Neko (=3.1.0-preview1= at the point of writing). Finally
+   you'll have to inherit =:android-user= profile in project's =:dev= profile:
+
+#+BEGIN_SRC clojure
+:dev [:android-common :android-user
+      {...}]
+#+END_SRC
+
+   There is one more little thing to do. At some point CIDER started performing
+   more complicated action when you press =C-x C-e= which now involves reloading
+   the =(ns ...)= form. This takes quite a while on Android, instead of nearly
+   <1 sec delay in the REPL you'll get 2-3 seconds. To get the old performance
+   back put this function definition into Emacs' =init.el= and evaluate:
+
+#+BEGIN_SRC scheme
+(defun cider--dummy-file-contents (form start-pos)
+  (let* ((start-pos (or start-pos 1))
+         (start-line (line-number-at-pos start-pos))
+         (start-column (save-excursion (goto-char start-pos) (current-column))))
+    (concat
+     "(in-ns '" (clojure-find-ns) ")"
+     (make-string (max 0 (- start-line 1)) ?\n)
+     (make-string start-column ? )
+     form)))
+#+END_SRC
+
+   This is a temporary hack until Bozhidar and I figure out a sensible way to
+   solve this.
+
+   BAM, that's it! In your next REPL session you'll be able to use all of
+   CIDER's sweet goodness. Speaking of which ---
+
+** What do I get from CIDER?
+
+   Let's briefly outline the cool features that CIDER brings to you:
+   - documentation for Clojure functions and Java methods, including links to
+     Javadoc[fn:3]
+   - completion[fn:4]
+   - data inspection
+   - macroexpansion
+   - eye-candy stacktraces
+   - tracing
+
+   What doesn't work:
+   - jumping to definition --- because unlike on JVM, Clojure-Android
+     applications don't have access to their source code.
+
+   The only thing left to do is for you to go and try it! Remember that unlike
+   real cider, CIDER abuse isn't dangerous for your health. So, stay healthy!
+
+{{[:hr]}}
+
+[fn:1] In the eye of the beholder. I'm yet to try Cursive, but so far CIDER has
+been my #1.
+
+[fn:2] With a few minor exceptions listed below.
+
+[fn:3] Only Java's own classes have these links. I think having those for
+Android classes would be incredibly useful too, so I'll take a look into it.
+
+[fn:4] Except for completing classes and namespaces that haven't been
+imported/loaded yet. I also have a solution for this underway.
+

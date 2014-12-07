@@ -1,0 +1,20 @@
+#+title: Clojure now works on Android 5.0 Lollipop
+#+tags: lollipop
+#+post-type: news
+#+nocut: true
+#+OPTIONS: toc:nil author:nil
+
+After a short hiccup, when Clojure applications couldn't be installed on the
+newest Android 5.0 version, we finally have a solution. Tireless [[https://github.com/AdamClements][@AdamClements]]
+and [[https://github.com/lorettahe][@lorettahe]] have discovered a bug in Android that prevents proxying abstract
+classes from Clojure. Using the patches they provided I updated the relevant
+packages so that you can now install your apps on Lollipop. Here they are:
+
+- =org.clojure-android/clojure 1.7.0-alpha4=
+- =org.clojure-android/tools.nrepl 0.2.6-lollipop=
+- =neko 3.1.0-preview3=
+
+The implemented changes involve stubbing clojure.pprint because it relied on
+=proxy=. This is a temporary measure until the new version of Android is
+released (the bug is already fixed in their development branch). You should also
+steer clear of proxying abstract classes until then.

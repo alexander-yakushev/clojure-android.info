@@ -1,0 +1,69 @@
+#+title: This is not programming, this is art
+#+tags: lein-droid neko art
+#+post-type: news
+#+OPTIONS: toc:nil author:nil
+
+TL;DR: Clojure is ready for Android ART. Are you?
+
+For quite some time I have been ignoring the latest Google's endeavor to make
+Android swifter. Android Runtime (ART for short) is a replacement for Dalvik,
+Android's older runtime. A more detailed description what it is and why it is
+better you can read [[https://source.android.com/devices/tech/dalvik/art.html][here]].
+
+On Android 4.4 KitKat ART can be optionally enabled, but starting with Lollipop
+ART will be the only choice. What is important for Clojure-Android users is that
+ART uses AOT-compilation (unlike Dalvik) and thus involves a more complicated
+process to go from DEX files to something that runtime can chew. Fortunately,
+Google preserved their old API for dynamic DEX loading, but modifying it so that
+it took me a few days to figure out how to do it in ART.
+
+#+readmore
+
+Adam Clements also [[http://dev.clojure.org/jira/browse/CLJ-1472][discovered a bug]] that prevents usage of =locking= on Android
+ART. It is questionable whether it is a bug in ART or Clojure, because many
+people report that ART's bytecode verification is unreasonably strict.
+Meanwhile, we'll have to avoid using =locking= in Clojure-Android projects and
+fix dependencies that use it.
+
+Speaking about performance, I haven't noticed significant difference in
+Clojure-Androi load time between Dalvik and ART. I'm yet to try ART with Project
+Skummet, maybe combining the two will give a sweet startup boost, but we'll have
+to see about that.
+
+So, you can start developing on ART right away. Here's the list of things you
+have to keep in mind:
+
+- REPL has become slightly slower because each time you execute a command, DEX
+  file has to be AOT-ed by ART. But the slowdown shouldn't be noticeable.
+- Because ART watches for new DEX files using inotify, suspending the device
+  puts inotify into energy-conserving mode. This means that if the device is
+  asleep, all REPL commands will be REALLY slow (up to 10 seconds). A way around
+  this is to enable "Stay awake when connected" in Developer Options.
+- Of course, the newest version of Android-enabled Clojure is required. It is
+  available as =[org.clojure-android/clojure "1.7.0-alpha3"]=.
+- Also, I had to fall back to custom build of tools.nrepl, since the
+  original contains a few invocations of =locking= macro. The version suitable for
+  ART is =[org.clojure-android/tools.nrepl "0.2.6"]=.
+- While these two dependencies are necessary for ART, they still suit Dalvik
+  perfectly fine, so you'd probably want to update in any case.
+
+Also I pushed updates to both lein-droid and Neko. =[lein-droid "0.3.0-beta3"]=
+contains minor fixes, while =[neko "3.1.0-preview1"]= brings some significant
+changes:
+
+- After being deprecated for a year, =neko.application= namespace is finally
+  removed for good.
+- Usage of =neko.context/context= is now deprecated. All functions that depended
+  on this global state now have an extra Context argument. Context-less versions
+  are still available, but will be removed at some point. The discussion behind
+  this change can be found here: [[https://groups.google.com/forum/#!topic/clojure-android/X4KDuLE6Oeg][thread1]] [[https://groups.google.com/forum/#!topic/clojure-android/OZLo0bP4FpU][thread2]].
+- All listeners are now wrapped with =safe-for-ui= macro, which prevents
+  applciation from crashing if an exception happens in the handler of those
+  listeners.
+- Most of [[https://github.com/clojure-emacs/cider][CIDER]] middleware is now supported. I will soon publish a separate post
+  on how to properly enable CIDER on Android.
+
+That is all for now. Please be aware that ART is still considered kinda
+experimental even for conventional Java programs, let alone Clojure. Bugs may
+happen, and I will be thankful if you report them either [[https://groups.google.com/forum/#!topic/clojure-android][on the mailing list]] or
+in lein-droid's and Neko's repositories.
