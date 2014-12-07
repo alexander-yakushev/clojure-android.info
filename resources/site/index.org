@@ -42,30 +42,27 @@
     Lisp dialect, Clojure harnesses the state-of-the-art macro system
     where all code is data.
 
-  - *REPL-driven development.* Although originally thought to be
-    impossible, Clojure dynamic compilation was brought to Android,
-    which enables the possibility to modify the application directly
-    in runtime. You don't have to recompile/redeploy your app with
-    every slightest change, just take this REPL and may it serve you
-    well.
+  - *REPL-driven development.* Although originally had been thought to be
+    impossible, Clojure dynamic compilation was brought to Android, which
+    enables the possibility to modify the application directly in runtime. You
+    don't have to recompile/redeploy your app with every slightest change, just
+    take this REPL and may it serve you well.
 
-  - *Logic, UI, data - all in one language.* Make no mistake - Android
-    declarative UI is a step forward from conventional Swing approach.
-    Java is not the language where declarative style fits nicely, and
-    XML perfectly handles tree-like UI structures. But having separate
-    languages in one single application creates certain
-    inconveniences. Clojure brings user interface back to the host
-    language. Declare your UI with Clojure native data structures,
-    manipulate them with regular functions, and finally transform them
-    into UI objects. No XML involved!
+  - *Logic, UI, data - all in one language.* Make no mistake --- Android
+    declarative UI is a step forward from conventional Swing approach. Java is
+    not the language where declarative style fits nicely, and XML perfectly
+    handles tree-like UI structures. But having separate languages in one single
+    application creates certain inconveniences. Clojure brings user interface
+    back to the host language. Declare your UI with Clojure native data
+    structures, manipulate them with regular functions, and finally transform
+    them into UI objects. No XML involved!
 
-  - *All strength of Android is still there.* Due to Clojure's
-    excellent Java interop capabilities you can use everything Android
-    platform has to offer. If some feature is not yet ported to
-    idiomatic Clojure, you can always fallback to creating objects and
-    calling methods. In fact, Clojure-Android doesn't try to wrap
-    every single Java method to make it feel more Clojurish - Android
-    platform is beautifully designed and we try to extend it only
+  - *All strength of Android is still there.* Due to Clojure's excellent Java
+    interop capabilities you can use everything Android platform has to offer.
+    If some feature is not yet ported to idiomatic Clojure, you can always
+    fallback to creating objects and calling methods. In fact, Clojure-Android
+    doesn't try to wrap every single Java method to make it feel more Clojurish
+    --- Android platform is beautifully designed and we try to extend it only
     where it benefits to do so.
 
 ** Shortcomings
