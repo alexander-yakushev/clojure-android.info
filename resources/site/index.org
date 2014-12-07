@@ -81,15 +81,13 @@
      with Android platform evolution and to track down all problems
      that may arise, but we are doing our best.
 
-   - *Clojure runtime is big.* This is the main technical challenge so
-     far, which leads to two issues - it takes a long time for even
-     simplest application to load (5-10 seconds, depending on the
-     device); and also the memory consumption is high, so the
-     application will be often killed (when it is not active) to free
-     the memory. There is still hope that this can eventually be
-     solved - either with the introduction of decent tree-shaker for
-     Clojure, or using Proguard to trim the compiled classes without
-     breaking the application.
+   - *Clojure runtime is big.* This is the main technical challenge so far,
+     which leads to two issues - it takes a long time for even simplest
+     application to load (5-10 seconds, depending on the device); and also the
+     memory consumption is high, so the application will be often killed (when
+     it is not active) to free the memory. There is still hope that this can
+     eventually be solved - with the introduction of decent tree-shaker for
+     Clojure.
 
    - *Clojure is slower than Java.* Clojure code can be optimized to
      achieve the performance on par with Java, but nevertheless most
@@ -101,23 +99,21 @@
      performance-critical code directly in Java alongside with Clojure
      code.
 
-   - *You have to know Android.* More like a warning than a drawback,
-     you still have to know Android platform decently to use
-     Clojure-Android. We do not try to compete with AOSP and replace
-     its idioms with our own ones, but rather embrace them completely
-     and simplify the usage wherever possible. So if you are new to
-     Android development, it is strongly advised to learn the concepts
-     from conventional Java side first. Clojure-android tools and
-     documentation presumes that the developer is familiar with
-     Android, as the basics are outside the scope of its scope.
+   - *You have to know Android.* More like a warning than a drawback, you still
+     have to know Android platform decently to use Clojure-Android. We do not
+     try to compete with AOSP and replace its idioms with our own ones, but
+     rather embrace them completely and simplify the usage wherever possible. So
+     if you are new to Android development, it is strongly advised to learn the
+     concepts from conventional Java side first. Clojure-Android tools and
+     documentation presume that developer is familiar with Android, as the
+     basics are outside the scope of it.
 
-   - *You have to know Clojure.* If you overlooked Clojure before
-     because you didn't see where to apply it, but now are interested
-     in Clojure-Android - this is great, yet we recommend you to get
-     acquainted with Clojure for JVM first. Learning Clojure with
-     Clojure-Android might be a frustrating experience because of the
-     possible bugs, platform limitations and somewhat different
-     approach to programming on this platform.
+   - *You have to know Clojure.* If you overlooked Clojure before because you
+     didn't see where to apply it, but now are interested in Clojure-Android ---
+     this is great, yet we recommend you to get acquainted with Clojure for JVM
+     first. Learning Clojure with Clojure-Android might be a frustrating
+     experience because of the possible bugs, platform limitations and somewhat
+     different approach to programming on this platform.
 
 * Get started{{[:sup " " [:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
   :PROPERTIES:
@@ -128,7 +124,7 @@
    [[https://github.com/clojure-android/lein-droid/wiki/Tutorial][Lein-droid tutorial]] will help you install all the required tools
    and get you familiarized with Clojure/Android build process.
 
-   [[https://github.com/krisc/events/blob/master/tutorial.md][Android App Development with Clojure]] is a very comprehensive
+   [[https://github.com/alexander-yakushev/events/blob/master/tutorial.md][Android App Development with Clojure]] is a very comprehensive
    step-by-step guide to writing a simple, yet functional Clojure
    mobile application.
 
@@ -142,13 +138,13 @@
   initiative or are somehow related to it.
 
   #+ATTR_HTML: :options class="table table-stripped table-tools" frame="none" border="0"
-  |                           | Project    | Version | Docs            | Description                                                                                                    |
-  |---------------------------+------------+---------+-----------------+----------------------------------------------------------------------------------------------------------------|
-  | [[./images/leiningen.jpg]]    | [[https://github.com/clojure-android/lein-droid][lein-droid]] |   0.2.3 | [[https://github.com/clojure-android/lein-droid/wiki][Wiki]] [[http://clojure-android.github.io/lein-droid][Marginalia]] | [[http://leiningen.org][Leiningen]] plugin, primary build tool for Clojure-Android projects.                                             |
-  | [[./images/neko.png]]         | [[http://github.com/clojure-android/neko][Neko]]       |   3.0.2 | [[https://github.com/clojure-android/neko/wiki][Wiki]] [[http://clojure-android.github.io/neko][Marginalia]] | Toolkit library for idiomatic Clojure development on Android.                                                  |
-  | [[./images/clojure-logo.png]] | [[https://github.com/alexander-yakushev/compliment][Compliment]] |   0.1.3 | [[https://github.com/alexander-yakushev/compliment/wiki/][Wiki]]            | Clojure completion library optimized for working on Android.                                                   |
-  | [[./images/emacs.png]]        | [[https://github.com/clojure-emacs/ac-cider][ac-cider]]   |   0.1.1 |                 | Compliment front-end for GNU/Emacs. Interacts with REPL via [[https://github.com/clojure-emacs/cider][CIDER]] (formerly nrepl.el).                         |
-  | [[./images/nightcode.png]]    | [[https://nightcode.info/][Nightcode]]  |  0.3.11 |                 | A simple IDE for Clojure and Java projects targeting the command line, the desktop, the web, Android, and iOS. |
+  |                        | Project    |        Version | Docs            | Description                                                                                                    |
+  |------------------------+------------+----------------+-----------------+----------------------------------------------------------------------------------------------------------------|
+  | [[./images/leiningen.jpg]] | [[https://github.com/clojure-android/lein-droid][lein-droid]] |    0.3.0-beta4 | [[https://github.com/clojure-android/lein-droid/wiki][Wiki]] [[http://clojure-android.github.io/lein-droid][Marginalia]] | [[http://leiningen.org][Leiningen]] plugin, primary build tool for Clojure-Android projects.                                             |
+  | [[./images/neko.png]]      | [[http://github.com/clojure-android/neko][Neko]]       | 3.1.0-preview3 | [[https://github.com/clojure-android/neko/wiki][Wiki]] [[http://clojure-android.github.io/neko][Marginalia]] | Toolkit library for idiomatic Clojure development on Android.                                                  |
+  | [[./images/cider.png]]     | [[https://github.com/clojure-emacs/cider][CIDER]]      |          0.8.1 |                 | Clojure IDE and REPL for Emacs.                                                                                |
+  | [[./images/emacs.png]]     | [[https://github.com/clojure-emacs/ac-cider][ac-cider]]   |          0.2.0 |                 | Auto-complete source for CIDER completion.                                                                     |
+  | [[./images/nightcode.png]] | [[https://nightcode.info/][Nightcode]]  |          0.4.2 |                 | A simple IDE for Clojure and Java projects targeting the command line, the desktop, the web, Android, and iOS. |
 
 * Applications{{[:sup " "[:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
   :PROPERTIES:
