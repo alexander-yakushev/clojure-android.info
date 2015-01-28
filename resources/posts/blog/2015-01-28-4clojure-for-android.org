@@ -1,0 +1,33 @@
+#+title: 4Clojure for Android is now in Google Play!
+#+tags: apps
+#+post-type: news
+#+nocut: true
+#+OPTIONS: toc:nil author:nil
+
+Just to remind that me (and Clojure-Android) are alive and well, and for little
+personal amusement, I hacked together a full-blown 4Clojure client for Android.
+You can download it from here: [[https://play.google.com/store/apps/details?id%3Dorg.bytopia.foreclojure][4Clojure for Android]]. It supports both online and
+offline mode, so you can solve your 4Clojure problems even when there is no
+network available --- the app will upload them later when connected. Mind that
+this is not an official client, although 4clojure.com guys gave me the
+permission to use data and resources.
+
+Also this is a link to the repository:
+https://github.com/alexander-yakushev/foreclojure-android. Everything is open
+source, of course. Took me 5 days from scratch to finish, including me solving
+infrastructure problems along the way, and I'm fairly pleased with both the
+development experience, and the on-device performance. Mobile hardware indeed
+has made a great leap (comparing Oneplus\nbsp{}One to my old Galaxy\nbsp{}S...
+meh).
+
+The load time is still significant. That is partly because I couldn't use
+Skummet --- obviously because I need on-device Clojure compilation, and Skummet
+wracks that. Still, it could be worse.
+
+The whole thing is ~1100 lines of Clojure code, together with UI definitions
+(done almost entirely in Clojure, not in XML). There are also around 200 SLOC of
+Java code, probably half of which do nothing more but animate Gus' eye color
+change on the splash screen. Talk about brevity and compactness.
+
+OK, I'm getting too tired to type anything more. Please install, evaluate (pun
+intended), and share your feedback.

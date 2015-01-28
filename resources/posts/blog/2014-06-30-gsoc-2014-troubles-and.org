@@ -36,7 +36,7 @@ far, both for your interest and my better understanding.
    the name of the Var. This allows to compile this expression into an
    assignment:
 
-#+BEGIN_SRC javap
+#+BEGIN_SRC java
 144: getstatic     #92                 // Field clojure/core__init.alter_var_root:Ljava/lang/Object;
 147: checkcast     #18                 // class clojure/lang/IFn
 150: getstatic     #97                 // Field testskummet/foo__init.just_value:Ljava/lang/Object;

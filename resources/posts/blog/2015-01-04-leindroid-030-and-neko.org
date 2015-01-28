@@ -1,0 +1,26 @@
+#+title: Lein-droid 0.3.0 and Neko 3.1.0 released
+#+tags: lein-droid neko update
+#+post-type: news
+#+OPTIONS: toc:nil author:nil
+
+There have been quite few issues lately, so I decided to set in stone the
+current versions of lein-droid and Neko before I proceed with new stuff. Nothing
+significant has changed since the previous beta/preview versions, so I will just
+quickly recap the most important modifications that happened after last big
+releases.
+
+- lein-droid became more profile-reliant and less dependent on plugin magic.
+- AndroidManifest.xml transformed into AndroidManifest.template.xml and now
+  supports arbitrary substitutions.
+- All functions in Neko that used implicit global =context= now have an extra
+  arity that requires passing Context object explicitly. Context-less arities
+  are now deprecated.
+- Neko and Clojure itself were modified to support both ART runtime and Android
+  5.0.
+
+Props go to [[https://github.com/AdamClements][Adam Clements]] for playing a big role in the releases.
+
+I don't plan to stick with these versions for long, but you may consider them as
+sort of milestones. If critical bugs are found there I will push patches on a
+separate prioritized schedule. Marginalia docs were also recreated for the
+releases. That is all for now, stay tuned!

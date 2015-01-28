@@ -79,22 +79,20 @@
      that may arise, but we are doing our best.
 
    - *Clojure runtime is big.* This is the main technical challenge so far,
-     which leads to two issues - it takes a long time for even simplest
+     which leads to two issues --- it takes a long time for even simplest
      application to load (5-10 seconds, depending on the device); and also the
      memory consumption is high, so the application will be often killed (when
-     it is not active) to free the memory. There is still hope that this can
-     eventually be solved - with the introduction of decent tree-shaker for
-     Clojure.
+     it is not active) to free the memory. There is hope that this can
+     eventually be solved --- by [[http://clojure-android.info/blog/2015/01/05/experimental-skummet-support-was/][reducing Clojure runtime]] during compilation.
 
-   - *Clojure is slower than Java.* Clojure code can be optimized to
-     achieve the performance on par with Java, but nevertheless most
-     idiomatic Clojure will be slower for natural reasons. Clojure
-     promotes immutable collections and use of ephemeral objects, but
-     unlike JVM, Dalvik's GC does not handle lots of small objects
-     well. So await that GC will be kicking in often and impact your
-     performance. On the bright side, you can retreat to writing
-     performance-critical code directly in Java alongside with Clojure
-     code.
+   - *Clojure is slower than Java.* Clojure code can be optimized to achieve the
+     performance on par with Java, but nevertheless most idiomatic Clojure will
+     be slower for natural reasons. Clojure promotes immutable collections and
+     use of ephemeral objects, but unlike JVM, Dalvik's GC does not handle lots
+     of small objects well (although ART made advances in this direction). So
+     await that GC will be kicking in often and impact your performance. On the
+     bright side, you can retreat to writing performance-critical code directly
+     in Java alongside with Clojure code.
 
    - *You have to know Android.* More like a warning than a drawback, you still
      have to know Android platform decently to use Clojure-Android. We do not
@@ -135,13 +133,13 @@
   initiative or are somehow related to it.
 
   #+ATTR_HTML: :options class="table table-stripped table-tools" frame="none" border="0"
-  |                        | Project    |        Version | Docs            | Description                                                                                                    |
-  |------------------------+------------+----------------+-----------------+----------------------------------------------------------------------------------------------------------------|
-  | [[./images/leiningen.jpg]] | [[https://github.com/clojure-android/lein-droid][lein-droid]] |    0.3.0-beta4 | [[https://github.com/clojure-android/lein-droid/wiki][Wiki]] [[http://clojure-android.github.io/lein-droid][Marginalia]] | [[http://leiningen.org][Leiningen]] plugin, primary build tool for Clojure-Android projects.                                             |
-  | [[./images/neko.png]]      | [[http://github.com/clojure-android/neko][Neko]]       | 3.1.0-preview3 | [[https://github.com/clojure-android/neko/wiki][Wiki]] [[http://clojure-android.github.io/neko][Marginalia]] | Toolkit library for idiomatic Clojure development on Android.                                                  |
-  | [[./images/cider.png]]     | [[https://github.com/clojure-emacs/cider][CIDER]]      |          0.8.1 |                 | Clojure IDE and REPL for Emacs.                                                                                |
-  | [[./images/emacs.png]]     | [[https://github.com/clojure-emacs/ac-cider][ac-cider]]   |          0.2.0 |                 | Auto-complete source for CIDER completion.                                                                     |
-  | [[./images/nightcode.png]] | [[https://nightcode.info/][Nightcode]]  |          0.4.2 |                 | A simple IDE for Clojure and Java projects targeting the command line, the desktop, the web, Android, and iOS. |
+  |                        | Project    | Version | Docs            | Description                                                                                                    |
+  |------------------------+------------+---------+-----------------+----------------------------------------------------------------------------------------------------------------|
+  | [[./images/leiningen.jpg]] | [[https://github.com/clojure-android/lein-droid][lein-droid]] |   0.3.0 | [[https://github.com/clojure-android/lein-droid/wiki][Wiki]] [[http://clojure-android.github.io/lein-droid][Marginalia]] | [[http://leiningen.org][Leiningen]] plugin, primary build tool for Clojure-Android projects.                                             |
+  | [[./images/neko.png]]      | [[http://github.com/clojure-android/neko][Neko]]       |   3.1.0 | [[https://github.com/clojure-android/neko/wiki][Wiki]] [[http://clojure-android.github.io/neko][Marginalia]] | Toolkit library for idiomatic Clojure development on Android.                                                  |
+  | [[./images/cider.png]]     | [[https://github.com/clojure-emacs/cider][CIDER]]      |   0.8.1 |                 | Clojure IDE and REPL for Emacs.                                                                                |
+  | [[./images/emacs.png]]     | [[https://github.com/clojure-emacs/ac-cider][ac-cider]]   |   0.2.0 |                 | Auto-complete source for CIDER completion.                                                                     |
+  | [[./images/nightcode.png]] | [[https://nightcode.info/][Nightcode]]  |   0.4.2 |                 | A simple IDE for Clojure and Java projects targeting the command line, the desktop, the web, Android, and iOS. |
 
 * Applications{{[:sup " "[:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
   :PROPERTIES:

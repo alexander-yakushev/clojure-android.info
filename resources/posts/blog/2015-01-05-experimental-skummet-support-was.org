@@ -1,0 +1,87 @@
+#+title: Experimental Skummet support was added to lein-droid
+#+tags: lein-droid skummet
+#+post-type: news
+#+OPTIONS: toc:nil author:nil
+
+Now since both lein-droid and Neko stable releases have been coined, it is time
+to break stuff. =lein-droid 0.3.1-SNAPSHOT= ships with lean compilation option
+using [[http://clojure-android.info/blog/2014/08/12/gsoc-2014-skummet-alpha1/][Project Skummet]]. The easiest way to try it out will be to grab a sample
+project from [[https://github.com/clojure-android/lein-droid/tree/skummet/sample][here]], change plugin version to 0.3.1-SNAPSHOT and run =lein
+with-profile lean droid doall=.
+
+#+readmore
+
+If you want to run Skummet against your existing project (which you probably
+do), here's a checklist of necessary actions:
+
+- Put this profile into your =project.clj=:
+
+  #+BEGIN_SRC clojure
+:lean
+[:release
+ {:dependencies ^:replace [[org.bytopia/clojure "1.7.0-skummet-SNAPSHOT" :use-resources true]
+                           [neko/neko "3.1.1-SNAPSHOT" :exclusions [[org.clojure-android/clojure]]]]
+  :android {:lean-compile true
+            :skummet-skip-vars ["#'neko.init/init"
+                                "#'neko.context/context"
+                                "#'neko.resource/package-name"
+                                "#'neko.-utils/keyword->static-field"
+                                "#'neko.-utils/keyword->setter"
+                                "#'neko.ui.traits/get-display-metrics"
+                                "#'test.leindroid.sample.main/MainActivity-onCreate"]}}]
+  #+END_SRC
+
+- =:skummet-skip-vars= list instructs Skummet to not leanify specified vars. You
+  will have to extend this list with some of your own vars, such as: functions
+  that stand for =gen-class='ed methods (see last item in the example), vars
+  that you perform manual actions on (alter roots, reset metas, etc.) and
+  possibly some others.
+
+- If you use =SplashActivity.java= to jump start your application then edit
+  these lines in =loadClojure()= method:
+
+  #+BEGIN_SRC diff
+-  Symbol CLOJURE_MAIN = Symbol.intern("neko.init");
+-  Var REQUIRE = RT.var("clojure.core", "require");
+-  REQUIRE.invoke(CLOJURE_MAIN);
++  Var LOAD = RT.var("clojure.core", "load");
++  LOAD.invoke("/neko/init");
+  #+END_SRC
+
+- Finally, update lein-droid dependency to =0.3.1-SNAPSHOT=. Now you should be
+  able to run =lein with-profile lean droid doall= and enjoy lean compilation
+  benefits.
+
+** Preliminary results
+
+   On my OnePlus One device I was able to get 2.0 sec startup time vs 4-5 sec
+   with regular release build. Lean APK weights 1.0 MB (against 1.8 MB non-lean)
+   and uses around 10 MB of heap when running. All this was for a sample
+   helloworldish application plus half of Neko. I don't want to get too
+   optimistic but such results make Clojure/Android leave the league "Terrible"
+   and enter league "Bad". Way to go!
+
+** Limitations
+
+   This thing is alpha as hell. In summer I made Skummet successfully compile
+   core.async which is a very complex library, so I think the hardest part is in
+   the past. Still, you should expect bugs and weird behavior. Here is the list
+   of issues I'm already aware of:
+
+- Only Android 4.4 and lower for now. It won't be hard to port Lollipop fixes on
+  top of my Clojure Skummet fork, but I haven't done it yet. ART itself works
+  fine nonetheless.
+- I temporarily disabled the support for data readers in lein-droid. This is
+  only until I find a way to make it work with Skummet.
+- =1.7.0-skummet-SNAPSHOT= is based on pretty old fork of Clojure 1.6.0. I'll
+  need to take a look how much has changed since then in the code that I
+  touched, maybe I can catch up. Regardless of that, I don't plan to support
+  Skummet as-is in the long run. It is a nice proof of concept, but it has to be
+  somehow integrated into mainline Clojure, otherwise keeping it up will be too
+  much of a chore. Reid McKenzie [[http://www.arrdem.com/2014/12/11/oxcart_going_forwards/][described this conundrum]] very well. Still I
+  hope for the best.
+
+
+  Now don't let my ranting keep you any longer and go treat your fatty apps with
+  some Skummet-o-matic! On my part I welcome you to share any of your
+  experiences.
