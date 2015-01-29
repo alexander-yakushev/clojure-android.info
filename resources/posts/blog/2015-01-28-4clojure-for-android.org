@@ -29,5 +29,5 @@ The whole thing is ~1100 lines of Clojure code, together with UI definitions
 Java code, probably half of which do nothing more but animate Gus' eye color
 change on the splash screen. Talk about brevity and compactness.
 
-OK, I'm getting too tired to type anything more. Please install, evaluate (pun
+OK, I'm getting too tired to type anything else. Please install, evaluate (pun
 intended), and share your feedback.
