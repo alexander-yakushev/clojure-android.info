@@ -1,0 +1,115 @@
+#+title: Project Skummet
+#+OPTIONS: toc:nil
+
+#+begin_hiccup
+[:div {:class "container"} [:div {:class "jumbotron"} [:img {:src
+ "../images/skummet.png" :style "float: left; margin-right: 30px;"}] [:div {:class
+ "row"} [:h1 "Project Skummet"] [:p "Experimental <b>Clojure</b> compiler with
+ small memory footprint, fast loading time and reduced binary size."]
+   [:a {:class "btn btn-lg btn-primary" :role "button"
+        :href "#comparison" }
+    "Show me the numbers!"]]]
+ [:center {:id "newsline"}
+  (let [f (->> (io/list-files :posts)
+               (filter #(= (:post-type (first (io/read-doc %))) "news"))
+               last)
+        [metadata] (io/read-doc f)]
+    [:span "Latest news: " (format-date (:date metadata) "(dd/MM/YY) ")
+     [:a {:href (post-url f)} (:title metadata)]])]]
+#+end_hiccup
+
+* What is Skummet?{{[:sup " " [:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
+  :PROPERTIES:
+  :HTML_CONTAINER_CLASS: container
+  :CUSTOM_ID: what
+  :END:
+
+  Skummet (=skʊmut=, from Norwegian: skummet — skimmed, fat-free) is a tool that
+  compiles Clojure code and Clojure runtime itself into more compact, faster to
+  load bytecode. Technically, Skummet is a fork of Clojure that introduces a few
+  changes to some of its classes. The changes are moderate in size ({{[:span
+  {:style "color:#00ff00"} "+533"]}} {{[:span {:style "color:#ff0000"}
+  "-125"]}}) and touch only the compilation part --- but not the way how Clojure
+  works.
+
+  Here's the list of things Skummet does to achieve the promised size and
+  bootstrap time reduction:
+
+  - *Lean compilation of Vars*. In Clojure a var is a mutable reference that
+    stores reference to a global value, a function or macro. It's mutability and
+    dynamicity allows to easily redefine these objects in the REPL, but in
+    production this feature is useless most of the time. Replacing vars with
+    simple class fields saves time spent on initializing the vars, and also
+    slightly improves the function lookup time.
+  - *Skipping compilation of macros*. Since macros perform all their work in
+    compile-time, it doesn't make sense to emit them into the resulting classes.
+  - *Smart metadata elision*. Default Clojure metadata trimmer removes meta
+    before evaluation happens. This doesn't allow to exclude metadata that is
+    necessary in compile time but not in runtime. Skummet solves this issue.
+  - *Ignoring refer/import calls*. Since during lean compilation most things are
+    linked statically, these namespace-manipulating functions are not needed to
+    be called.
+
+  Skummet was designed with maximum compatibility in mind. Most Clojure code can
+  be compiled with Skummet without any effort on the programmer's side. Although
+  there may be issues with code that relies on referencing Var objects directly.
+  See Troubleshooting section to get around this problem.
+
+* How good is Skummet?{{[:sup " " [:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
+  :PROPERTIES:
+  :HTML_CONTAINER_CLASS: container
+  :CUSTOM_ID: comparison
+  :END:
+
+  Tables below demonstrate how well Skummet performs on different platforms when
+  compared to vanilla Clojure. Benchmarking application was a simple hello-world
+  with minimal dependencies.
+
+  #+CAPTION: *JVM 1.7 (Thinkpad X220, Intel i5 2nd gen.)*
+  #+ATTR_HTML: :class table table-stripped table-comparison :align center
+  | Parameter                 | Clojure | Skummet | Reduction (%) |
+  |---------------------------+---------+---------+---------------|
+  | Load time (seconds)       |    1.28 |    0.62 |          51.6 |
+  | Uberjar size (KB)         |    3640 |    2533 |          30.4 |
+  | Heap usage (after GC, KB) |    3749 |    2614 |          30.3 |
+   #+TBLFM: @2$4=(1-(@2$3/@2$2))*100;%.1f::@3$4=(1-(@3$3/@3$2))*100;%.1f::@4$4=(1-(@4$3/@4$2))*100;%.1f
+
+  #+CAPTION: *Android 4.4 (Oneplus One)*
+  #+ATTR_HTML: :class table table-stripped table-comparison :align center
+  | Parameter                                | Clojure | Skummet | Reduction (%) |
+  |------------------------------------------+---------+---------+---------------|
+  | Load time (first launch, seconds)        |    2.02 |    0.82 |          59.4 |
+  | "Hot" load time (next launches, seconds) |    1.90 |    0.64 |          66.3 |
+  | APK size (KB)                            |    1920 |     956 |          50.2 |
+  | Heap usage (after GC, KB)                |    5469 |    3408 |          37.7 |
+   #+TBLFM: @2$4=(1-(@2$3/@2$2))*100;%.1f::@3$4=(1-(@3$3/@3$2))*100;%.1f::@4$4=(1-(@4$3/@4$2))*100;%.1f::@5$4=(1-(@5$3/@5$2))*100;%.1f
+
+* Get started{{[:sup " " [:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
+  :PROPERTIES:
+  :HTML_CONTAINER_CLASS: container
+  :CUSTOM_ID: get-started
+  :END:
+
+  Skummet comes in two sizes: regular version and Android version. The only
+  difference between them is the latter having =clojure.pprint= disabled. This
+  is a temporary solution because of Android 5.0 bug.
+
+*** JVM
+
+   [[https://github.com/alexander-yakushev/lein-skummet][Lein-skummet]] is a plugin for compiling Clojure JVM programs using Skummet. A
+   short guide on its usage can be found [[https://github.com/alexander-yakushev/lein-skummet/wiki][here]].
+
+*** Android
+
+   [[https://github.com/clojure-android/lein-droid][Lein-droid]] supports Skummet as of version =0.3.4=. This [[https://github.com/clojure-android/lein-droid/wiki/Lean-compilation][wiki page]] explains
+   how to add lean compilation capabilities to your Clojure-Android project.
+
+* Getting help{{[:sup " " [:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
+  :PROPERTIES:
+  :HTML_CONTAINER_CLASS: container
+  :CUSTOM_ID: help
+  :END:
+
+  You can report issues in [[https://github.com/alexander-yakushev/clojure/tree/skummet][Skummet repository]]. You can also ask questions on
+  Clojure-Android's [[https://groups.google.com/forum/#!forum/clojure-android][mailing list]] and *#clojure-android* IRC channel on
+  Freenode.net.

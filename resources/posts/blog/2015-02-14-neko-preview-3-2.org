@@ -1,0 +1,32 @@
+#+title: Neko 3.2.0-preview2 is out
+#+tags: lein-droid neko update
+#+post-type: news
+#+OPTIONS: toc:nil author:nil
+#+nocut: true
+
+New Neko version contains quite a few changes that I accumulated when writing
+4Clojure app. Some changes are quite substantial, and a couple of features are
+considered deprecated now, although none of the changes should breaking for now.
+
+- Refactored =neko.data.sqlite=. All function lost =db-= prefix (so =db-query=
+  became =query= etc.). Added new features, like batch inserts, retrieving
+  scalar functions and querying multiple tables at once. See the updated
+  documentation [[https://github.com/clojure-android/neko/wiki/Working-with-SQLite][here]].
+- Added [[https://github.com/clojure-android/neko/wiki/Namespaces#cursor-adapter][cursor-adapter]] which works nicely with cursors returned by
+  =neko.data.sqlite/query=.
+- =neko.resource= namespace got a new macro =(import-all)= that should
+  substitute all the remaining functions. Keywords-to-resource-IDs functions,
+  traits introduced only for keyword-resource conversion, special reader macros
+  (=#res/drawable= etc) --- all that is quite confusing to be honest. By the
+  hint from Adam Clements I came to a conclusion that nothing beats plain old
+  interop =R$drawable/ic_launcher=. What =(neko.resource/import-all)= does is it
+  imports all application R subclasses so that you don't have to do it manually.
+- Moved =*a= macro to =neko.debug= namespace (previously it was in =neko.activity=).
+- Added =:features= option to =defactivity= which is identical to calling
+  =request-window-features!=.
+
+Lein-droid (currently =0.3.3=) also received some love, with the main feature
+being able to specify =:use-debug-keystore? true= in =project.clj=. This allows
+you to test release builds without typing release keystore credentials every
+time. Also, a pause after compiling all namespaces was removed which slightly
+improved project build time.

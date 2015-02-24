@@ -22,18 +22,18 @@ body {
     vertical-align:middle;
 }
 
-table.table-tools {
-    margin-bottom: 20px;
-}
-table.table-apps {
-    margin-bottom: 20px;
-}
-.table-tools {
-    margin-bottom: 0px;
-}
-.table-apps {
-    margin-bottom: 0px;
-}
+/* table.table-comparison { */
+/*     margin-bottom: 20px; */
+/* } */
+/* .table-tools { */
+/*     margin-bottom: 0px; */
+/* } */
+/* .table-apps { */
+/*     margin-bottom: 0px; */
+/* } */
+/* .table-comparison { */
+/*     margin-bottom: 0px; */
+/* } */
 .table-apps td {
     vertical-align: middle !important;
 }
@@ -44,19 +44,35 @@ table.table-apps {
     width: 48px;
 }
 .table-apps th:nth-child(2){
-    width: 130px;
+    width: 125px;
 }
 .table-apps th:nth-child(3){
-    width: 100px;
+    width: 110px;
 }
 .table-tools th:nth-child(1){
     width: 48px;
 }
 .table-tools th:nth-child(3){
-    width: 90px;
+    width: 120px;
 }
-.table-tools th:nth-child(4){
-    width: 100px;
+
+table.table-comparison {
+    width: 600px;
+    margin-top: 20px;
+    align: center;
+}
+.table-comparison th {
+    text-align: right;
+}
+.table-comparison td {
+    text-align: right;
+}
+.table-comparison th:nth-child(1){
+    width: 300px;
+    text-align: left;
+}
+.table-comparison td:nth-child(1){
+    text-align: left;
 }
 
 .table-post {

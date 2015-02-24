@@ -47,6 +47,7 @@
 
       [:div#right-navbar.navbar-collapse.collapse
        [:ul.nav.navbar-nav
+        [:li [:a {:href "/skummet"} "Skummet"]]
         [:li [:a {:href "/blog"} "Blog"]]]]]]
 
     (when (or (= (:type metadata) :post)

@@ -66,11 +66,8 @@
     --- Android platform is beautifully designed and we try to extend it only
     where it benefits to do so.
 
-** Shortcomings
-
-   Everything comes with a price. Clojure-Android has a couple of
-   drawbacks and peculiarities you should consider before jumping into
-   development.
+  Everything comes with a price. Clojure-Android has a couple of drawbacks and
+  peculiarities you should consider before jumping into development.
 
    - *It is a hobby project.* The work for Clojure-Android initiative is done
      mostly for fun/interest, and our community is small (but this directly
@@ -79,22 +76,11 @@
      evolution and to track down all problems that may arise, but we are doing
      our best.
 
-   - *Clojure runtime is big.* This is the main technical challenge so far,
-     which leads to two issues --- it takes some time for simple application to
-     load (6-8 seconds, depending on the device); and also the memory
-     consumption is higher than with Java, so the application might killed more
-     often (when it is not active) to free the memory. Although steps are taken
-     to solve this problem, for example, by [[http://clojure-android.info/blog/2015/01/05/experimental-skummet-support-was/][reducing Clojure runtime]] we were
-     able to reduce loading time to 2 seconds.
-
-   - *Clojure is somewhat slower than Java.* Clojure code can be optimized to
-     achieve the performance on par with Java, but nevertheless most idiomatic
-     Clojure will be slower for natural reasons. Clojure promotes immutable
-     collections and use of ephemeral objects, and until ART, Dalvik did not
-     handle lots of small objects well (things are better know). This puts some
-     additional pressure on the Garbage Collector. On the bright side, you can
-     retreat to writing performance-critical code directly in Java alongside
-     with Clojure code.
+   - *Clojure runtime adds overhead.* This spawns two issues --- it takes some
+     time for simple application to load (3-4 seconds, depending on the device);
+     and also the memory consumption is higher than with Java. Although with the
+     introduction of {{[:a {:href "/skummet"} "Project Skummet"]}} both these
+     problems can be mostly eliminated.
 
    - *You have to know Android.* More like a warning than a drawback, you still
      have to know Android platform decently to use Clojure-Android. We do not
@@ -104,13 +90,6 @@
      advised to learn the concepts from conventional Java side first.
      Clojure-Android tools and documentation presume that developer is familiar
      with Android, as the basics are outside the scope of it.
-
-   - *You have to know Clojure.* If you overlooked Clojure before because you
-     didn't see where to apply it, but now are interested in Clojure-Android ---
-     this is great, yet we recommend you to get acquainted with Clojure for JVM
-     first. Learning Clojure with Clojure-Android might be a frustrating
-     experience because of the platform limitations and the quite different
-     approach to programming on this platform.
 
 * Get started{{[:sup " " [:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
   :PROPERTIES:
@@ -134,14 +113,14 @@
   This list contains developer tools that support Clojure-Android
   initiative or are somehow related to it.
 
-  #+ATTR_HTML: :options class="table table-stripped table-tools" frame="none" border="0"
-  |                        | Project    | Version | Docs            | Description                                                                                                    |
-  |------------------------+------------+---------+-----------------+----------------------------------------------------------------------------------------------------------------|
-  | [[./images/leiningen.jpg]] | [[https://github.com/clojure-android/lein-droid][lein-droid]] |   0.3.0 | [[https://github.com/clojure-android/lein-droid/wiki][Wiki]] [[http://clojure-android.github.io/lein-droid][Marginalia]] | [[http://leiningen.org][Leiningen]] plugin, a build tool for Clojure-Android projects.                                                   |
-  | [[./images/neko.png]]      | [[http://github.com/clojure-android/neko][Neko]]       |   3.1.0 | [[https://github.com/clojure-android/neko/wiki][Wiki]] [[http://clojure-android.github.io/neko][Marginalia]] | Toolkit library for idiomatic Clojure development on Android.                                                  |
-  | [[./images/cider.png]]     | [[https://github.com/clojure-emacs/cider][CIDER]]      |   0.8.1 |                 | Clojure IDE and REPL for Emacs.                                                                                |
-  | [[./images/emacs.png]]     | [[https://github.com/clojure-emacs/ac-cider][ac-cider]]   |   0.2.0 |                 | Auto-complete source for CIDER completion.                                                                     |
-  | [[./images/nightcode.png]] | [[https://nightcode.info/][Nightcode]]  |   0.4.2 |                 | A simple IDE for Clojure and Java projects targeting the command line, the desktop, the web, Android, and iOS. |
+  #+ATTR_HTML: :class table table-stripped table-tools
+  |                        | Project    | Docs             | Description                                                                                                    |
+  |------------------------+------------+------------------+----------------------------------------------------------------------------------------------------------------|
+  | [[./images/leiningen.jpg]] | [[https://github.com/clojure-android/lein-droid][lein-droid]] | [[https://github.com/clojure-android/lein-droid/wiki][Wiki]], [[http://clojure-android.github.io/lein-droid][Marginalia]] | [[http://leiningen.org][Leiningen]] plugin, a build tool for Clojure-Android projects.                                                   |
+  | [[./images/neko.png]]      | [[http://github.com/clojure-android/neko][Neko]]       | [[https://github.com/clojure-android/neko/wiki][Wiki]], [[http://clojure-android.github.io/neko][Marginalia]] | Toolkit library for idiomatic Clojure development on Android.                                                  |
+  | [[./images/cider.png]]     | [[https://github.com/clojure-emacs/cider][CIDER]]      | [[https://github.com/clojure-emacs/cider/wiki/Installation][Installation]]     | Clojure IDE and REPL for Emacs.                                                                                |
+  | [[./images/emacs.png]]     | [[https://github.com/clojure-emacs/ac-cider][ac-cider]]   |                  | Auto-complete source for CIDER completion.                                                                     |
+  | [[./images/nightcode.png]] | [[https://nightcode.info/][Nightcode]]  |                  | A simple IDE for Clojure and Java projects targeting the command line, the desktop, the web, Android, and iOS. |
 
 * Applications{{[:sup " "[:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
   :PROPERTIES:
@@ -152,13 +131,13 @@
   The following list consists of mobile applications that are powered
   by Clojure-Android tools.
 
-  #+ATTR_HTML: :options class="table table-stripped table-apps" frame="none" border="0"
-  |                         | Project        | Author        | Description                                                                                                                                                                                                              |
-  |-------------------------+----------------+---------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-  | [[./images/nightweb.png]]   | [[https://nightweb.net][Nightweb]]       | [[https://github.com/oakes][Zach Oakes]]    | Nightweb connects your Android device to an anonymous, peer-to-peer social network. You can write posts and share photos, and your followers will retrieve them using BitTorrent running over the I2P anonymous network. |
-  | [[./images/spaz.png]]       | [[https://github.com/kenrestivo/spazradioapp][SPAZ Radio App]] | [[https://github.com/kenrestivo][Ken Restivo]]   | A radio listening app for the [[http://spaz.org/][SPAZ streaming radio station]].                                                                                                                                                              |
-  | [[./images/figurehead.png]] | [[https://play.google.com/store/apps/details?id%3Dfigurehead.ui][Figurehead]]     | [[https://github.com/pw4ever][Wei Peng]]      | Rule your Android, as the Root, fully programmable, in Clojure.                                                                                                                                                          |
-  | [[./images/4clojure.png]]   | [[https://play.google.com/store/apps/details?id%3Dorg.bytopia.foreclojure][4Clojure]]       | Alex Yakushev | Solve short Clojure challenges on your mobile phone.                                                                                                                                                                     |
+  #+ATTR_HTML:   #+ATTR_HTML: :class table table-stripped table-apps
+  |                         | Project             | Author        | Description                                                                         |
+  |-------------------------+---------------------+---------------+-------------------------------------------------------------------------------------|
+  | [[./images/4clojure.png]]   | [[https://play.google.com/store/apps/details?id%3Dorg.bytopia.foreclojure][4Clojure]] ([[https://github.com/alexander-yakushev/foreclojure-android][source]])   | [[https://github.com/alexander-yakushev][Alex Yakushev]] | Solve short Clojure challenges on your mobile phone.                                |
+  | [[./images/spaz.png]]       | [[https://github.com/kenrestivo/spazradioapp][SPAZ Radio App]]      | [[https://github.com/kenrestivo][Ken Restivo]]   | A radio listening app for the [[http://spaz.org/][SPAZ streaming radio station]].                         |
+  | [[./images/figurehead.png]] | [[https://play.google.com/store/apps/details?id%3Dfigurehead.ui][Figurehead]] ([[https://github.com/pw4ever/tbnl][source]]) | [[https://github.com/pw4ever][Wei Peng]]      | Rule your Android, as the Root, fully programmable, in Clojure.                     |
+  | [[./images/nightweb.png]]   | [[https://nightweb.net][Nightweb]] ([[https://github.com/oakes/Nightweb][source]])   | [[https://github.com/oakes][Zach Oakes]]    | Nightweb connects your Android device to an anonymous, peer-to-peer social network. |
 
 * Community{{[:sup " " [:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
   :PROPERTIES:

@@ -1,0 +1,27 @@
+#+title: Skummet is updated to the latest Clojure version
+#+tags: skummet
+#+OPTIONS: toc:nil author:nil
+#+post-type: news
+
+#+begin_hiccup
+[:p [:img {:class "entry-img-right"
+:style "margin-top:20px;"
+:width 300
+:src "/images/post/captain-hammer.jpg"
+:alt "Captain Hammer"}]]
+#+end_hiccup
+
+Sometimes it takes a good kick in the butt to unveil your hidden motivation
+reserves. After I got the confirmation that Project Skummet isn't going to be
+included into upstream Clojure, I decided to remaster its codebase and continue
+maintaining it on my own. Today Skummet gets version =1.7.0-alpha5-r1=, which
+means it is based upon Clojure 1.7.0-alpha5, and Skummet itself is "revision
+one". In other words: Skummet now supports transducers!
+
+I rolled out a separate webpage dedicated to Skummet on this website, with a
+short description and the latest benchmarks. {{[:a {:href "/skummet"} "Here it
+is"]}}. Docs for using Skummet on both JVM and Android were also updated. Thus,
+nothing should prevent you now from trying out Skummet and sharing your
+experiences! If there is something wrong though (and there should absolutely
+be), please report it either in [[https://github.com/alexander-yakushev/clojure/tree/skummet][Skummet repository]], [[https://groups.google.com/forum/#!forum/clojure-android][mailing list]] or
+*#clojure-android* IRC channel. Cheers!
