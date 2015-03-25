@@ -2,6 +2,7 @@
 #+tags: skummet
 #+OPTIONS: toc:nil author:nil
 #+post-type: news
+#+nocut: true
 
 #+begin_hiccup
 [:p [:img {:class "entry-img-right"

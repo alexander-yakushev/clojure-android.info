@@ -1,0 +1,22 @@
+#+title: Skummet is compatible with Proguard
+#+tags: skummet
+#+OPTIONS: toc:nil author:nil
+#+post-type: news
+
+Good news everyone, the latest release of Skummet is compatible with [[http://proguard.sourceforge.net/][Proguard]]!
+Proguard is an optimizer/obfuscator/file shrinker for Java, which in our case
+can remove unused classes, methods and fields from compiled Clojure namespaces.
+Lein-droid was also upgraded to make use of it as easy as possible. You can try
+out the improved loading time and reduced APK size today, by downloading the
+[[https://github.com/clojure-android/lein-droid/tree/master/sample][sample project]] and building it with =lein with-profile lean droid doall=. Also
+check out the [[http://clojure-android.info/skummet/][Skummet]] page for the new, even sweeter benchmark numbers.
+
+If you want to try Proguard with your existing projects, just use the sample
+project as an example. The main things to do is to upgrade lein-droid to
+=0.4.0-SNAPSHOT=, update Skummet version to =r2=, create a Proguard config file
+and put its path into =project.clj=. Once again, [[https://github.com/clojure-android/lein-droid/blob/master/sample/project.clj#L62][sample]] got you covered.
+
+This might sound ironic, but the newest Proguard-compatible Skummet is a little
+unstable compared to the original one. I mean, they are both pretty unstable, so
+please leave your feedback in the Github Issues, or on *clojure-android* IRC.
+Have fun!

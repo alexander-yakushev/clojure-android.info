@@ -62,26 +62,28 @@
   :END:
 
   Tables below demonstrate how well Skummet performs on different platforms when
-  compared to vanilla Clojure. Benchmarking application was a simple hello-world
-  with minimal dependencies.
+  compared to vanilla Clojure. Benchmarking application was a simple
+  hello-world. JVM benchmark used zero extra dependencies, while Android
+  benchmark also includes Neko for drawing a very simple interface in the
+  starting activity. Both Skummet benchmarks were run through Proguard.
 
   #+CAPTION: *JVM 1.7 (Thinkpad X220, Intel i5 2nd gen.)*
   #+ATTR_HTML: :class table table-stripped table-comparison :align center
   | Parameter                 | Clojure | Skummet | Reduction (%) |
   |---------------------------+---------+---------+---------------|
-  | Load time (seconds)       |    1.28 |    0.62 |          51.6 |
-  | Uberjar size (KB)         |    3640 |    2533 |          30.4 |
-  | Heap usage (after GC, KB) |    3749 |    2614 |          30.3 |
+  | Load time (seconds)       |    1.28 |    0.45 |          64.8 |
+  | Jar size w/o source (KB)  |    3640 |    2299 |          36.8 |
+  | Heap usage (after GC, KB) |    3749 |    2506 |          33.2 |
    #+TBLFM: @2$4=(1-(@2$3/@2$2))*100;%.1f::@3$4=(1-(@3$3/@3$2))*100;%.1f::@4$4=(1-(@4$3/@4$2))*100;%.1f
 
   #+CAPTION: *Android 4.4 (Oneplus One)*
   #+ATTR_HTML: :class table table-stripped table-comparison :align center
   | Parameter                                | Clojure | Skummet | Reduction (%) |
   |------------------------------------------+---------+---------+---------------|
-  | Load time (first launch, seconds)        |    2.02 |    0.82 |          59.4 |
-  | "Hot" load time (next launches, seconds) |    1.90 |    0.64 |          66.3 |
-  | APK size (KB)                            |    1920 |     956 |          50.2 |
-  | Heap usage (after GC, KB)                |    5469 |    3408 |          37.7 |
+  | Load time (first launch, seconds)        |    4.02 |    1.00 |          75.1 |
+  | "Hot" load time (next launches, seconds) |    3.61 |    0.79 |          78.1 |
+  | APK size (KB)                            |    1669 |     696 |          58.3 |
+  | Heap usage (after GC, KB)                |    5469 |    2750 |          49.7 |
    #+TBLFM: @2$4=(1-(@2$3/@2$2))*100;%.1f::@3$4=(1-(@3$3/@3$2))*100;%.1f::@4$4=(1-(@4$3/@4$2))*100;%.1f::@5$4=(1-(@5$3/@5$2))*100;%.1f
 
 * Get started{{[:sup " " [:a {:style "font-size: 14px;" :href "#"} "↑"]]}}
