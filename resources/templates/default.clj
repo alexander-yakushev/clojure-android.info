@@ -41,13 +41,11 @@
        [:ul {:class "nav navbar-nav"}
         [:li [:a {:href "/#why"} "Rationale"]]
         [:li [:a {:href "/#get-started"} "Get started"]]
-        [:li [:a {:href "/#tools"} "Tools"]]
-        [:li [:a {:href "/#apps"} "Applications"]]
-        [:li [:a {:href "/#community"} "Community"]]]]
+        [:li [:a {:href "/#tools"} "Tools & Applications"]]
+        [:li [:a {:href "/skummet"} "Skummet"]]]]
 
       [:div#right-navbar.navbar-collapse.collapse
        [:ul.nav.navbar-nav
-        [:li [:a {:href "/skummet"} "Skummet"]]
         [:li [:a {:href "/blog"} "Blog"]]]]]]
 
     (when (or (= (:type metadata) :post)

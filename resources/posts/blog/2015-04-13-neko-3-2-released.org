@@ -1,0 +1,32 @@
+#+title: Neko 3.2.0 is released
+#+tags: neko update
+#+post-type: news
+
+Because the preview version was stable enough, I decided to cut the release. Only
+a few minor fixes were introduced in addition to the previous quite large [[http://clojure-android.info/blog/2015/02/14/neko-preview-3-2/][list
+of changes]]. =3.2.0= will be the last big release in 3.x branch, as I'm
+conceiving plans for Neko 4. The next major iteration will undergo improvements
+to make it fit better with [[http://clojure-android.info/skummet/][Skummet]], and have the globally available context
+un-deprecated (but in a sensible way this time around). Neko 4 will also boast
+more APIs (Intent and Service APIs come to mind) because now with Skummet there
+is no reason to limit ourselves with the number functions that not everyone
+might use. Overall, I think the current version is in good shape, and I should
+bump the major number before stirring up the waters.
+
+I also uploaded the new Clojure build some time ago that fixes the Lollipop
+proxy bug completely. It means that =clojure.pprint= is alive again, and also you can
+use as much proxies in your code as you want. The version is called
+=org.clojure-android/clojure 1.7.0-alpha6=, but in fact it is based on the same
+alpha5 upstream tag. It's slightly confusing, so I should just update that to
+beta1 since it's already out.
+
+#+readmore
+
+Finally, Skummet was updated too, the latest version being =org.skummet/clojure
+1.7.0-alpha5-r4=. This version fixes many bugs introduced in =r3= with Proguard
+compatibility, and it can successfully compile *core.async* again. Moreover,
+since the proxy bug is fixed, it is now a single version of Skummet for both JVM
+and Android.
+
+I hope you enjoy the new versions, and give your feedback as usual, on the
+mailing list of IRC. Have fun!
